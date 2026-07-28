@@ -1,44 +1,56 @@
-<svg width="220" height="60" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+<svg
+xmlns="http://www.w3.org/2000/svg"
+viewBox="0 0 200 200"
+width="200"
+height="200">
 
-    <defs>
+<defs>
 
-        <linearGradient
-            id="logoGradient"
-            x1="0%"
-            y1="0%"
-            x2="100%"
-            y2="100%">
+<linearGradient
+id="logo"
+x1="0%"
+y1="0%"
+x2="100%"
+y2="100%">
 
-            <stop offset="0%" stop-color="#0466C8"/>
-            <stop offset="100%" stop-color="#023E7D"/>
+<stop offset="0%" stop-color="#0466C8"/>
 
-        </linearGradient>
+<stop offset="100%" stop-color="#023E7D"/>
 
-    </defs>
+</linearGradient>
 
-    <!-- Símbolo -->
-    <g transform="translate(2,2) scale(.28)">
+</defs>
 
-        <g
-            transform="rotate(-45 100 100)"
-            fill="none"
-            stroke="url(#logoGradient)"
-            stroke-width="24"
-            stroke-linecap="round">
 
-            <path d="
-                M148 52
-                L76 52
-                A24 24 0 0 0 76 100
+<g
+transform="translate(-4 -4) scale(.36)">
 
-                M52 148
-                L124 148
-                A24 24 0 0 0 124 100
-            "/>
+<g
 
-        </g>
+transform="rotate(-45 100 100)"
 
-    </g>
+fill="none"
 
-   
+stroke="url(#logo)"
+
+stroke-width="28"
+
+stroke-linecap="round"
+
+stroke-linejoin="round">
+
+<path d="
+M148 52
+L76 52
+A24 24 0 0 0 76 100
+
+M52 148
+L124 148
+A24 24 0 0 0 124 100
+"/>
+
+</g>
+
+</g>
+
 </svg>
