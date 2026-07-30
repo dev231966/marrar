@@ -1,29 +1,12 @@
 import { Link } from 'react-router-dom';
 import RevealOnScroll from '../../../components/RevealOnScroll';
+import studentsImage from '../../../assets/students-hero.png';
 
 export default function Hero() {
   return (
     <>
       <section className="hero">
-        <RevealOnScroll as="div" className="hero-text">
-          <span className="eyebrow"><span className="dot" />Feito para estudantes de Moçambique</span>
-          <h1>Vai <span className="accent">marrar</span><br />com confiança.</h1>
-          <p className="lead">Matérias, exercícios e explicação para os exames de admissão e nacional, tudo num único lugar.</p>
-          <div className="hero-cta">
-            <Link className="btn-primary large" to="/login">Criar conta grátis</Link>
-            <Link className="btn-ghost large" to="/login">Já tenho conta</Link>
-          </div>
-          <div className="trust-row">
-            <div className="avatars">
-              <span style={{ background: '#D6342C' }}>A</span>
-              <span style={{ background: '#F0A438' }}>B</span>
-              <span style={{ background: '#1E9E5A' }}>C</span>
-            </div>
-            Estudantes já estão a marrar todos os dias
-          </div>
-        </RevealOnScroll>
-
-        <RevealOnScroll as="div" delay={2} className="hero-illustration">
+                <RevealOnScroll as="div" delay={2} className="hero-illustration">
           <div className="illustration-frame">
             <svg viewBox="0 0 420 420" fill="none">
               <circle cx="210" cy="210" r="190" fill="var(--bg-soft)" />
@@ -66,8 +49,29 @@ export default function Hero() {
                 <path d="M8 16v10c0 3 5.4 6 12 6s12-3 12-6V16" stroke="var(--accent)" strokeWidth="2" fill="none" strokeLinecap="round" />
               </g>
             </svg>
+
+            <img className="hero-students" src={studentsImage} alt="Três estudantes moçambicanos a sorrir" />
           </div>
         </RevealOnScroll>
+        <RevealOnScroll as="div" className="hero-text">
+          <span className="eyebrow"><span className="dot" />Feito para estudantes de Moçambique</span>
+          <h1>Vai <span className="accent">marrar</span><br />com confiança.</h1>
+          <p className="lead">Matérias, exercícios e explicação para os exames de admissão e nacional, tudo num único lugar.</p>
+          <div className="hero-cta">
+            <Link className="btn-primary large" to="/login">Criar conta grátis</Link>
+            <Link className="btn-ghost large" to="/login">Já tenho conta</Link>
+          </div>
+          <div className="trust-row">
+            <div className="avatars">
+              <span style={{ background: '#D6342C' }}>A</span>
+              <span style={{ background: '#F0A438' }}>B</span>
+              <span style={{ background: '#1E9E5A' }}>C</span>
+            </div>
+            Estudantes já estão a marrar todos os dias
+          </div>
+        </RevealOnScroll>
+
+
       </section>
 
       <RevealOnScroll as="div" className="badges-strip">
