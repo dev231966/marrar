@@ -3,16 +3,24 @@ import { useRef, useState } from "react";
 import Math from "../../components/Math";
 import "./Duvidas.css";
 
-// Divide o texto em pedaços normais e blocos LaTeX ($...$ ou $$...$$)
-// para renderizar fórmulas dentro da resposta da IA sem quebrar o resto do texto.
-function renderComLatex(texto) {
-  const partes = texto.split(/(\$\$[^$]+\$\$|\$[^$]+\$)/g);
+// Divide o texto em pedaços normais, blocos LaTeX ($...$ ou $$...$$)
+// e negrito (**texto**), renderizando cada um com o componente certo,
+// para destacar fórmulas e termos importantes na resposta da IA.
+function renderConteudo(texto) {
+  const partes = texto.split(/(\$\$[^$]+\$\$|\$[^$]+\$|\*\*[^*]+\*\*)/g);
   return partes.map((parte, i) => {
     if (parte.startsWith("$$") && parte.endsWith("$$")) {
       return <Math key={i} tex={parte.slice(2, -2)} display />;
     }
     if (parte.startsWith("$") && parte.endsWith("$")) {
       return <Math key={i} tex={parte.slice(1, -1)} display={false} />;
+    }
+    if (parte.startsWith("**") && parte.endsWith("**")) {
+      return (
+        <strong key={i} className="duv-highlight">
+          {parte.slice(2, -2)}
+        </strong>
+      );
     }
     return <span key={i}>{parte}</span>;
   });
@@ -33,6 +41,7 @@ export default function Duvidas() {
     const pergunta = (textoForcado ?? input).trim();
     if (!pergunta || carregando) return;
 
+    const historicoAnterior = mensagens;
     const novoHistorico = [...mensagens, { role: "user", texto: pergunta }];
     setMensagens(novoHistorico);
     setInput("");
@@ -45,16 +54,41 @@ export default function Duvidas() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           pergunta,
-          historico: mensagens,
+          historico: historicoAnterior,
           contexto: context,
         }),
       });
-      const dados = await resp.json();
-      if (!resp.ok) throw new Error(dados.erro || "Falha na resposta");
+
+      let dados = null;
+      try {
+        dados = await resp.json();
+      } catch {
+        // resposta não veio em JSON (ex: erro 500 sem corpo, timeout do servidor, etc.)
+      }
+
+      if (!resp.ok) {
+        // Mostra a mensagem real do servidor sempre que existir.
+        // Caso contrário, dá pelo menos o código HTTP em vez de um "erro" genérico.
+        const motivo = dados?.erro || `O servidor respondeu com o código ${resp.status}.`;
+        throw new Error(motivo);
+      }
+
+      if (!dados?.texto) {
+        throw new Error("A resposta da IA veio vazia.");
+      }
 
       setMensagens((atual) => [...atual, { role: "model", texto: dados.texto }]);
     } catch (e) {
-      setErro("Não consegui responder agora. Tenta outra vez.");
+      // Remove a pergunta do utilizador que ficou sem resposta, para não deixar
+      // uma mensagem "pendurada" no histórico sem indicação do que aconteceu.
+      setMensagens((atual) => atual.filter((m) => m !== novoHistorico[novoHistorico.length - 1]));
+
+      const mensagemErro =
+        e?.message === "Failed to fetch"
+          ? "Não consegui ligar ao servidor. Verifica a tua ligação à internet."
+          : e?.message || "Não consegui responder agora. Tenta outra vez.";
+
+      setErro(mensagemErro);
     } finally {
       setCarregando(false);
       setTimeout(() => bottomRef.current?.scrollIntoView({ behavior: "smooth" }), 50);
@@ -103,7 +137,7 @@ export default function Duvidas() {
         <div className="duv-thread">
           {mensagens.map((m, i) => (
             <div key={i} className={`duv-msg ${m.role}`}>
-              <div className="duv-bubble">{renderComLatex(m.texto)}</div>
+              <div className="duv-bubble">{renderConteudo(m.texto)}</div>
             </div>
           ))}
           {carregando && (

@@ -143,3 +143,7 @@
 }
 .duv-send svg { width: 18px; height: 18px; color: #fff; }
 .duv-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.duv-highlight {
+  color: var(--gold, #F0A438);
+  font-weight: 700;
+}
