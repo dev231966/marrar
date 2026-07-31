@@ -1,0 +1,102 @@
+.loader-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--bg, #FAFAF8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-content {
+  max-width: 420px;
+  width: 100%;
+  padding: 40px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+}
+
+/* logo */
+.loader-logo {
+  position: relative;
+  width: 72px;
+  height: 72px;
+}
+.logo-mark {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent, #D6342C), var(--gold, #F0A438));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 12px 28px rgba(214, 52, 44, 0.18);
+}
+.logo-mark svg {
+  width: 36px;
+  height: 36px;
+}
+.pulse-ring {
+  position: absolute;
+  inset: -8px;
+  border: 2px solid var(--accent, #D6342C);
+  border-radius: 20px;
+  opacity: 0;
+  animation: pulse-out 2s cubic-bezier(.2,.7,.2,1) infinite;
+}
+@keyframes pulse-out {
+  0% { opacity: 1; transform: scale(0.95); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+
+/* progress bar */
+.loader-progress {
+  width: 100%;
+}
+.progress-bar {
+  position: relative;
+  height: 6px;
+  border-radius: 100px;
+  background: #E9E6E2;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 100px;
+  background: linear-gradient(90deg, var(--accent, #D6342C), var(--gold, #F0A438), var(--accent, #D6342C));
+  background-size: 200% 100%;
+  animation: progress-shimmer 2s ease-in-out infinite;
+  transition: width 0.4s ease-out;
+}
+@keyframes progress-shimmer {
+  0%, 100% { background-position: 0% center; }
+  50% { background-position: 100% center; }
+}
+
+/* message */
+.loader-message {
+  text-align: center;
+  min-height: 24px;
+}
+.message-text {
+  font-size: 15.5px;
+  font-weight: 700;
+  color: var(--ink, #1C1B1A);
+  font-family: 'Inter', sans-serif;
+  display: inline-block;
+  animation: fade-in-up .6s cubic-bezier(.2,.7,.2,1);
+}
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 480px) {
+  .loader-content { gap: 24px; }
+  .loader-logo { width: 60px; height: 60px; }
+  .logo-mark { width: 60px; height: 60px; border-radius: 13px; }
+  .logo-mark svg { width: 30px; height: 30px; }
+  .message-text { font-size: 14px; }
+}

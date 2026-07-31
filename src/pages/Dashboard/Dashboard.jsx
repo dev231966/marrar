@@ -1,37 +1,51 @@
-import { Link } from 'react-router-dom';
-import Logo from '../../components/Logo';
+import DashboardHeader from '../../components/layout/DashboardHeader';
+import ScoreCard from './sections/ScoreCard';
+import ContinueCard from './sections/ContinueCard';
+import ServicesGrid from './sections/ServicesGrid';
+import SubjectsRow from './sections/SubjectsRow';
+import ExamCountdown from './sections/ExamCountdown';
+import StudyHeatmap from './sections/StudyHeatmap';
+import ActivityFeed from './sections/ActivityFeed';
+import Achievements from './sections/Achievements';
 import './Dashboard.css';
 
-/**
- * Casca do painel autenticado. Propositadamente isolada da Home:
- * tem o seu próprio layout (sidebar + topo), sem depender do
- * Header/Footer do site público. Substitui o conteúdo abaixo
- * pelos módulos reais (matérias, exercícios, caderno de erros...).
- */
-export default function Dashboard() {
+export default function Dashboard({ studentName = 'Juvêncio', streakDays = 7 }) {
   return (
-    <div className="dashboard-shell">
-      <aside className="dashboard-sidebar">
-        <Logo />
-        <nav className="dashboard-nav">
-          <a className="active" href="#">Início</a>
-          <a href="#">Matérias</a>
-          <a href="#">Exercícios</a>
-          <a href="#">Caderno de erros</a>
-          <a href="#">Nota prevista</a>
-        </nav>
-        <Link className="btn-ghost" to="/" style={{ marginTop: 'auto', justifyContent: 'center' }}>Sair</Link>
-      </aside>
+    <div className="dashboard-page">
+      <DashboardHeader />
 
-      <main className="dashboard-main">
-        <header className="dashboard-topbar">
-          <h1>Olá 👋</h1>
-          <p>Este é o teu painel. Liga aqui os módulos de matérias, exercícios e progresso.</p>
-        </header>
-
-        <div className="dashboard-placeholder">
-          <p>Conteúdo do dashboard ainda por construir.</p>
+      <main className="page">
+        <div className="greet">
+          <div>
+            <h1>
+              Olá, <span>{studentName}</span>
+            </h1>
+            <p>Aqui está o teu progresso de hoje</p>
+          </div>
+          <div className="streak">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 2c1 3-2 4-2 7a4 4 0 008 0c0-1-.5-2-1-2 1 3-1 5-3 5a4 4 0 01-4-4c0-4 3-4 2-6z" />
+            </svg>
+            {streakDays} dias seguidos
+          </div>
         </div>
+
+        <div className="hero-row">
+          <ScoreCard score={13.4} maxScore={20} />
+          <ContinueCard subject="Matemática · Progressões" progress={58} />
+        </div>
+
+        <ServicesGrid />
+        <SubjectsRow />
+        <ExamCountdown daysLeft={47} readySubjects={5} totalSubjects={6} />
+
+        <div className="section-lbl">O teu histórico</div>
+        <div className="grid-2">
+          <StudyHeatmap />
+          <ActivityFeed />
+        </div>
+
+        <Achievements />
       </main>
     </div>
   );
