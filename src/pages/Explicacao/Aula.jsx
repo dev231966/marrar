@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getMateria, getTema, getAula } from "../../data/explicacaoData";
-import Math from "../../components/Math";
+import Mathmarrar from "../../components/Mathmarrar";
 import Mascot from "../../components/Mascot";
 import "./Aula.css";
 
@@ -45,7 +45,7 @@ export default function Aula() {
         <div className="example-box" key={i}>
           <span className="tag">{ex.tag}</span>
           {ex.enunciado && <p className="enunciado">{ex.enunciado}</p>}
-          {ex.latex && <div className="formula"><Math tex={ex.latex} /></div>}
+          {ex.latex && <div className="formula"><Mathmarrar tex={ex.latex} /></div>}
           {(ex.nota || ex.explicacao) && (
             <p className="nota">{ex.nota || <><b>Porquê:</b> {ex.explicacao}</>}</p>
           )}

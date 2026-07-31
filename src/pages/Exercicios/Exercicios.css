@@ -1,0 +1,75 @@
+.exercicios-page {
+  --bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --ink: #1C1B1A;
+  --ink-soft: #6E6A66;
+  --border: #E9E6E2;
+  --accent: #D6342C;
+  --accent-hover: #B82922;
+  --accent-tint: #FDEDEC;
+  --shadow-sm: 0 1px 2px rgba(28, 27, 26, 0.05);
+  --radius: 18px;
+
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.exercicios-page h1 { font-family: 'Plus Jakarta Sans', sans-serif; }
+.exercicios-page a { text-decoration: none; }
+.exercicios-page b { color: var(--ink); }
+
+.exercicios-page main.page {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 28px 16px 60px;
+}
+
+.exercicios-page .placeholder {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  padding: 40px 28px;
+  text-align: center;
+  margin-top: 24px;
+}
+
+.exercicios-page .placeholder-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  border-radius: 14px;
+  background: var(--accent-tint);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.exercicios-page .placeholder-icon svg { width: 26px; height: 26px; stroke: var(--accent); }
+
+.exercicios-page .placeholder h1 {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.exercicios-page .placeholder > p {
+  font-size: 14.5px;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  max-width: 420px;
+  margin: 0 auto 28px;
+}
+
+.exercicios-page .btn-primary {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 12px 22px;
+  border-radius: 12px;
+  transition: background .15s ease;
+}
+.exercicios-page .btn-primary:hover { background: var(--accent-hover); }

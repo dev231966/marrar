@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
-import Math from "../../components/Math";
+import Mathmarrar from "../../components/Mathmarrar";
 import "./Duvidas.css";
 
 // Divide o texto em pedaços normais, blocos LaTeX ($...$ ou $$...$$)
@@ -10,10 +10,10 @@ function renderConteudo(texto) {
   const partes = texto.split(/(\$\$[^$]+\$\$|\$[^$]+\$|\*\*[^*]+\*\*)/g);
   return partes.map((parte, i) => {
     if (parte.startsWith("$$") && parte.endsWith("$$")) {
-      return <Math key={i} tex={parte.slice(2, -2)} display />;
+      return <Mathmarrar key={i} tex={parte.slice(2, -2)} display />;
     }
     if (parte.startsWith("$") && parte.endsWith("$")) {
-      return <Math key={i} tex={parte.slice(1, -1)} display={false} />;
+      return <Mathmarrar key={i} tex={parte.slice(1, -1)} display={false} />;
     }
     if (parte.startsWith("**") && parte.endsWith("**")) {
       return (

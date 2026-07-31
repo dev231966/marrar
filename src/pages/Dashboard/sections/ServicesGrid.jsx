@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { services } from './dashboardData';
 import { IconChat, IconCheck, IconTrend, IconAlert, IconBook, IconTools } from './DashboardIcons';
 
@@ -18,12 +19,12 @@ export default function ServicesGrid() {
         {services.map((service) => {
           const Icon = ICONS[service.icon];
           return (
-            <a key={service.key} className={`service ${service.className}`} href="#">
+            <Link key={service.key} className={`service ${service.className}`} to={`/dashboard/${service.key}`}>
               <div className="service-icon">
                 <Icon />
               </div>
               <span className="name">{service.name}</span>
-            </a>
+            </Link>
           );
         })}
       </div>

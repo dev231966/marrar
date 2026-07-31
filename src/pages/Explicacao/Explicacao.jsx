@@ -92,7 +92,7 @@ export default function Explicacao() {
         </>
       )}
 
-      <Mascot message="Tenho dúvidas? Pergunta-me qualquer coisa." context={{}} />
+      <Mascot message="Tenho dúvidas? Pergunta-me qualquer coisa." />
     </div>
   );
 }
