@@ -2,7 +2,7 @@
 // Endpoint: POST /api/duvidas
 
 async function chamarGemini(instrucaoSistema, contents, apiKey, tentativas = 3) {
-  const modelo = "gemini-3.6-flash";
+  const modelo = "gemini-3.5-flash";
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`;
 
   let ultimaResposta = null;
@@ -101,13 +101,33 @@ export default async function handler(req, res) {
 
     if (!resposta.ok) {
       const detalhe = await resposta.text();
-      console.error("Gemini API error:", detalhe);
-      return res.status(502).json({
-        erro:
-          resposta.status === 503
-            ? "O assistente está sobrecarregado neste momento. Tenta novamente daqui a pouco."
-            : "Falha ao contactar a IA",
-      });
+      console.error("Gemini API error:", resposta.status, detalhe);
+
+      // Tenta extrair a mensagem específica devolvida pela Gemini, para o
+      // utilizador (e nós, a depurar) sabermos exatamente o que se passou
+      // em vez de um "Falha ao contactar a IA" genérico.
+      let mensagemGemini = null;
+      try {
+        const json = JSON.parse(detalhe);
+        mensagemGemini = json?.error?.message || null;
+      } catch {
+        // detalhe não era JSON, ignora
+      }
+
+      let erroUtilizador;
+      if (resposta.status === 503) {
+        erroUtilizador = "O assistente está sobrecarregado neste momento. Tenta novamente daqui a pouco.";
+      } else if (resposta.status === 429) {
+        erroUtilizador = "Limite de pedidos à IA atingido neste momento. Tenta novamente dentro de alguns minutos.";
+      } else if (resposta.status === 404) {
+        erroUtilizador = "O modelo de IA configurado não foi encontrado (erro de configuração no servidor).";
+      } else if (resposta.status === 400) {
+        erroUtilizador = `Pedido inválido enviado à IA${mensagemGemini ? `: ${mensagemGemini}` : "."}`;
+      } else {
+        erroUtilizador = `Falha ao contactar a IA (código ${resposta.status})${mensagemGemini ? `: ${mensagemGemini}` : "."}`;
+      }
+
+      return res.status(502).json({ erro: erroUtilizador });
     }
 
     const dados = await resposta.json();
@@ -118,6 +138,6 @@ export default async function handler(req, res) {
     return res.status(200).json({ texto });
   } catch (err) {
     console.error("Erro no processamento:", err);
-    return res.status(500).json({ erro: "Erro interno no servidor." });
+    return res.status(500).json({ erro: `Erro interno no servidor: ${err.message}` });
   }
 }
