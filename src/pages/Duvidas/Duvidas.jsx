@@ -145,6 +145,7 @@ export default function Duvidas() {
               <button key={c} className="duv-chip" onClick={() => enviar(c)}>{c}</button>
             ))}
           </div>
+          {erro && <p className="duv-error">{erro}</p>}
         </div>
       ) : (
         <div className="duv-thread">
