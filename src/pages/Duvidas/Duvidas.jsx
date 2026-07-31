@@ -1,30 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useRef, useState } from "react";
-import Mathmarrar from "../../components/Mathmarrar";
+import AiConteudo from "../../components/AiConteudo";
 import "./Duvidas.css";
-
-// Divide o texto em pedaços normais, blocos LaTeX ($...$ ou $$...$$)
-// e negrito (**texto**), renderizando cada um com o componente certo,
-// para destacar fórmulas e termos importantes na resposta da IA.
-function renderConteudo(texto) {
-  const partes = texto.split(/(\$\$[^$]+\$\$|\$[^$]+\$|\*\*[^*]+\*\*)/g);
-  return partes.map((parte, i) => {
-    if (parte.startsWith("$$") && parte.endsWith("$$")) {
-      return <Mathmarrar key={i} tex={parte.slice(2, -2)} display />;
-    }
-    if (parte.startsWith("$") && parte.endsWith("$")) {
-      return <Mathmarrar key={i} tex={parte.slice(1, -1)} display={false} />;
-    }
-    if (parte.startsWith("**") && parte.endsWith("**")) {
-      return (
-        <strong key={i} className="duv-highlight">
-          {parte.slice(2, -2)}
-        </strong>
-      );
-    }
-    return <span key={i}>{parte}</span>;
-  });
-}
 
 export default function Duvidas() {
   const navigate = useNavigate();
@@ -49,7 +26,7 @@ export default function Duvidas() {
     setCarregando(true);
 
     // Timeout de 25s: o backend já tem o seu próprio timeout de ~20s por
-    // tentativa Gemini, este é uma rede de segurança para o pedido nunca
+    // tentativa, este é uma rede de segurança para o pedido nunca
     // ficar "parado" indefinidamente do lado do browser.
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 25000);
@@ -151,7 +128,9 @@ export default function Duvidas() {
         <div className="duv-thread">
           {mensagens.map((m, i) => (
             <div key={i} className={`duv-msg ${m.role}`}>
-              <div className="duv-bubble">{renderConteudo(m.texto)}</div>
+              <div className="duv-bubble">
+                {m.role === "model" ? <AiConteudo texto={m.texto} /> : m.texto}
+              </div>
             </div>
           ))}
           {carregando && (

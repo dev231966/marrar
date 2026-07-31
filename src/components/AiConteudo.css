@@ -1,0 +1,80 @@
+.ai-conteudo { font-size: 14.5px; line-height: 1.65; color: var(--ink); }
+
+.ai-conteudo .ai-titulo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin: 18px 0 8px;
+}
+.ai-conteudo .ai-titulo:first-child { margin-top: 0; }
+
+.ai-conteudo .ai-subtitulo {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  margin: 14px 0 6px;
+}
+
+.ai-conteudo .ai-paragrafo { margin: 0 0 10px; }
+.ai-conteudo .ai-paragrafo:last-child { margin-bottom: 0; }
+
+.ai-conteudo .ai-lista,
+.ai-conteudo .ai-lista-num {
+  margin: 0 0 10px;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.ai-conteudo .ai-item { line-height: 1.5; }
+
+.ai-conteudo .ai-negrito { color: var(--ink); font-weight: 700; }
+
+.ai-conteudo .ai-divisor {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 14px 0;
+}
+
+/* "Card de destaque": qualquer citação em bloco (>) que a IA use para
+   realçar uma fórmula, definição ou resumo importante. */
+.ai-conteudo .ai-card-destaque {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--accent-tint, #FDEDEC);
+  border: 1px solid var(--accent, #D6342C);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 10px 0;
+}
+.ai-conteudo .ai-card-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+}
+.ai-conteudo .ai-card-icon svg { width: 20px; height: 20px; stroke: var(--accent, #D6342C); }
+.ai-conteudo .ai-card-body { flex: 1; font-size: 14px; }
+.ai-conteudo .ai-card-body p { margin: 0; }
+
+.ai-conteudo .ai-code-inline {
+  background: var(--bg-soft, #F6F2EC);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.ai-conteudo .ai-code-block {
+  background: var(--bg-soft, #F6F2EC);
+  border-radius: 10px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  margin: 10px 0;
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* KaTeX inline/bloco: garante que não estoira a largura da bolha de chat */
+.ai-conteudo .katex-display { overflow-x: auto; overflow-y: hidden; margin: 10px 0; }
