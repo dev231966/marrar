@@ -1,5 +1,6 @@
-.exercicios-page {
+.exe-page {
   --bg: #FAFAF8;
+  --bg-soft: #F6F2EC;
   --surface: #FFFFFF;
   --ink: #1C1B1A;
   --ink-soft: #6E6A66;
@@ -7,7 +8,10 @@
   --accent: #D6342C;
   --accent-hover: #B82922;
   --accent-tint: #FDEDEC;
+  --green: #1E9E5A;
+  --green-tint: #EAF8F0;
   --shadow-sm: 0 1px 2px rgba(28, 27, 26, 0.05);
+  --shadow-md: 0 12px 28px rgba(28, 27, 26, 0.08);
   --radius: 18px;
 
   background: var(--bg);
@@ -15,61 +19,113 @@
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }
+.exe-page h1, .exe-page h2 { font-family: 'Plus Jakarta Sans', sans-serif; }
+.exe-page main.page { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
 
-.exercicios-page h1 { font-family: 'Plus Jakarta Sans', sans-serif; }
-.exercicios-page a { text-decoration: none; }
-.exercicios-page b { color: var(--ink); }
+/* ---------- intro + escolha de matéria ---------- */
+.exe-intro h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.exe-intro p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 24px; }
 
-.exercicios-page main.page {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 28px 16px 60px;
-}
-
-.exercicios-page .placeholder {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 40px 28px;
-  text-align: center;
-  margin-top: 24px;
-}
-
-.exercicios-page .placeholder-icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 18px;
-  border-radius: 14px;
-  background: var(--accent-tint);
+.exe-materias { display: flex; flex-direction: column; gap: 10px; }
+.exe-materia-card {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 14px;
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
-.exercicios-page .placeholder-icon svg { width: 26px; height: 26px; stroke: var(--accent); }
+.exe-materia-card:hover { border-color: #DDD8D3; box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.exe-materia-card .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+.exe-materia-card .info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
+.exe-materia-card .nome { font-weight: 700; font-size: 15.5px; }
+.exe-materia-card .qtd { font-size: 12.5px; color: var(--ink-soft); }
+.exe-materia-card svg { width: 18px; height: 18px; color: var(--ink-soft); flex-shrink: 0; }
 
-.exercicios-page .placeholder h1 {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
+/* ---------- quiz ---------- */
+.exe-quiz-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.exe-exit {
+  width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+  border: 1px solid var(--border); background: var(--surface);
+  display: flex; align-items: center; justify-content: center; cursor: pointer;
 }
-.exercicios-page .placeholder > p {
+.exe-exit svg { width: 16px; height: 16px; color: var(--ink-soft); }
+.exe-progress { flex: 1; display: flex; align-items: center; gap: 10px; }
+.exe-progress .bar { flex: 1; height: 6px; border-radius: 100px; background: var(--border); overflow: hidden; }
+.exe-progress .fill { height: 100%; border-radius: 100px; transition: width .3s ease; }
+.exe-progress span { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); flex-shrink: 0; }
+
+.exe-tag { display: inline-block; padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
+
+.exe-pergunta { font-size: 19px; font-weight: 700; line-height: 1.4; margin-bottom: 20px; }
+
+.exe-opcoes { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.exe-opcao {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
   font-size: 14.5px;
+  font-family: inherit;
+  color: var(--ink);
+  transition: border-color .15s ease, background .15s ease;
+}
+.exe-opcao:not(:disabled):hover { border-color: #DDD8D3; background: var(--bg-soft); }
+.exe-opcao:disabled { cursor: default; }
+.exe-opcao .letra {
+  width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+  background: var(--bg-soft); color: var(--ink-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700;
+}
+.exe-opcao .texto { flex: 1; }
+.exe-opcao svg { width: 18px; height: 18px; flex-shrink: 0; }
+.exe-opcao.correta { border-color: var(--green); background: var(--green-tint); color: #147A44; }
+.exe-opcao.correta .letra { background: var(--green); color: #fff; }
+.exe-opcao.correta svg { color: var(--green); }
+.exe-opcao.errada { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-hover); }
+.exe-opcao.errada .letra { background: var(--accent); color: #fff; }
+.exe-opcao.errada svg { color: var(--accent); }
+
+.exe-feedback {
+  background: var(--bg-soft);
+  border-radius: 14px;
+  padding: 14px 16px;
+  font-size: 13.5px;
   color: var(--ink-soft);
   line-height: 1.6;
-  max-width: 420px;
-  margin: 0 auto 28px;
+  margin-bottom: 20px;
 }
 
-.exercicios-page .btn-primary {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 12px 22px;
-  border-radius: 12px;
-  transition: background .15s ease;
+.exe-actions .btn-primary { width: 100%; }
+.exe-actions .btn-primary:disabled { opacity: .5; cursor: default; transform: none; box-shadow: none; }
+
+/* ---------- resultado ---------- */
+.exe-result { text-align: center; padding-top: 24px; }
+.exe-result-ring { position: relative; width: 132px; height: 132px; margin: 0 auto 20px; }
+.exe-result-ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.exe-result-ring circle { fill: none; stroke-width: 8; stroke-linecap: round; }
+.exe-result-ring .bg { stroke: var(--border); }
+.exe-result-ring .fg { stroke: var(--green); transition: stroke-dashoffset .6s ease; }
+.exe-result-ring .num {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 800; font-family: 'Plus Jakarta Sans', sans-serif;
 }
-.exercicios-page .btn-primary:hover { background: var(--accent-hover); }
+.exe-result h1 { font-size: 22px; font-weight: 800; margin-bottom: 10px; }
+.exe-result p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; max-width: 380px; margin: 0 auto 26px; }
+.exe-result-actions { display: flex; flex-direction: column; gap: 10px; max-width: 280px; margin: 0 auto; }
+.exe-result-actions .btn-primary, .exe-result-actions .btn-ghost { width: 100%; padding: 13px; border-radius: 100px; font-weight: 700; font-size: 14px; }
+.exe-result-actions .btn-primary { background: var(--accent); color: #fff; border: none; cursor: pointer; }
+.exe-result-actions .btn-primary:hover { background: var(--accent-hover); }
+.exe-result-actions .btn-ghost { background: none; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer; }

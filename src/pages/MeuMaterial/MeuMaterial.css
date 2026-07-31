@@ -1,14 +1,15 @@
-.material-page {
+.mat2-page {
   --bg: #FAFAF8;
+  --bg-soft: #F6F2EC;
   --surface: #FFFFFF;
   --ink: #1C1B1A;
   --ink-soft: #6E6A66;
   --border: #E9E6E2;
+  --accent: #D6342C;
   --purple: #7C5CBF;
   --purple-tint: #F1EDFB;
-  --accent: #D6342C;
-  --accent-hover: #B82922;
   --shadow-sm: 0 1px 2px rgba(28, 27, 26, 0.05);
+  --shadow-md: 0 12px 28px rgba(28, 27, 26, 0.08);
   --radius: 18px;
 
   background: var(--bg);
@@ -16,60 +17,95 @@
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }
+.mat2-page h1 { font-family: 'Plus Jakarta Sans', sans-serif; }
+.mat2-page main.page { max-width: 780px; margin: 0 auto; padding: 24px 16px 60px; }
 
-.material-page h1 { font-family: 'Plus Jakarta Sans', sans-serif; }
-.material-page a { text-decoration: none; }
+.mat2-intro h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+.mat2-intro p { font-size: 14.5px; color: var(--ink-soft); margin-bottom: 20px; }
 
-.material-page main.page {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 28px 16px 60px;
-}
-
-.material-page .placeholder {
-  background: var(--surface);
-  border: 1px solid var(--border);
+/* ---------- dropzone ---------- */
+.mat2-drop {
+  border: 1.5px dashed var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 40px 28px;
-  text-align: center;
-  margin-top: 24px;
+  background: var(--surface);
+  padding: 26px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-bottom: 26px;
+  transition: border-color .15s ease, background .15s ease;
 }
+.mat2-drop:hover, .mat2-drop.over { border-color: var(--purple); background: var(--purple-tint); }
+.mat2-drop svg { width: 26px; height: 26px; color: var(--purple); margin-bottom: 4px; }
+.mat2-drop .t { font-weight: 700; font-size: 14.5px; }
+.mat2-drop .s { font-size: 12.5px; color: var(--ink-soft); }
 
-.material-page .placeholder-icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 18px;
-  border-radius: 14px;
-  background: var(--purple-tint);
+.mat2-page .section-lbl {
+  font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--ink-soft); margin-bottom: 12px; margin-top: 24px;
+}
+.mat2-page .section-lbl:first-of-type { margin-top: 0; }
+
+/* ---------- pastas ---------- */
+.mat2-pastas {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+.mat2-pasta {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .15s ease, box-shadow .15s ease;
 }
-.material-page .placeholder-icon svg { width: 26px; height: 26px; stroke: var(--purple); }
+.mat2-pasta:hover { border-color: #DDD8D3; }
+.mat2-pasta.active { border-color: var(--purple); box-shadow: 0 0 0 3px var(--purple-tint); }
+.mat2-pasta .ic {
+  width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-soft); color: var(--ink-soft);
+}
+.mat2-pasta .ic.all { background: var(--purple-tint); color: var(--purple); }
+.mat2-pasta .ic svg { width: 17px; height: 17px; }
+.mat2-pasta .nome { flex: 1; font-weight: 700; font-size: 13.5px; }
+.mat2-pasta .qtd { font-size: 12px; color: var(--ink-soft); font-weight: 600; }
 
-.material-page .placeholder h1 {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
+/* ---------- lista de ficheiros ---------- */
+.mat2-lista { display: flex; flex-direction: column; gap: 8px; }
+.mat2-ficheiro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
-.material-page .placeholder > p {
-  font-size: 14.5px;
-  color: var(--ink-soft);
-  line-height: 1.6;
-  max-width: 420px;
-  margin: 0 auto 28px;
+.mat2-ficheiro .ic {
+  width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
 }
+.mat2-ficheiro .ic svg { width: 18px; height: 18px; }
+.mat2-ficheiro .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.mat2-ficheiro .nome { font-size: 13.5px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mat2-ficheiro .meta { font-size: 12px; color: var(--ink-soft); }
+.mat2-ficheiro .mais {
+  width: 30px; height: 30px; border-radius: 8px; flex-shrink: 0;
+  border: none; background: none; color: var(--ink-soft); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+}
+.mat2-ficheiro .mais:hover { background: var(--bg-soft); }
+.mat2-ficheiro .mais svg { width: 16px; height: 16px; }
 
-.material-page .btn-primary {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 12px 22px;
-  border-radius: 12px;
-  transition: background .15s ease;
-}
-.material-page .btn-primary:hover { background: var(--accent-hover); }
+/* ---------- vazio ---------- */
+.mat2-vazio { text-align: center; padding: 30px 20px; color: var(--ink-soft); }
+.mat2-vazio svg { width: 40px; height: 40px; margin: 0 auto 10px; opacity: .5; }
+.mat2-vazio p { font-size: 13.5px; }

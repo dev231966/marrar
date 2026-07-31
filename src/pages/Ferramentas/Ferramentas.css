@@ -1,12 +1,12 @@
-.ferramentas-page {
+.ferr-page {
   --bg: #FAFAF8;
+  --bg-soft: #F6F2EC;
   --surface: #FFFFFF;
   --ink: #1C1B1A;
   --ink-soft: #6E6A66;
   --border: #E9E6E2;
   --accent: #D6342C;
   --accent-hover: #B82922;
-  --accent-tint: #FDEDEC;
   --shadow-sm: 0 1px 2px rgba(28, 27, 26, 0.05);
   --shadow-md: 0 12px 28px rgba(28, 27, 26, 0.08);
   --radius: 18px;
@@ -16,79 +16,132 @@
   min-height: 100vh;
   font-family: 'Inter', sans-serif;
 }
+.ferr-page h1 { font-family: 'Plus Jakarta Sans', sans-serif; }
+.ferr-page main.page { max-width: 560px; margin: 0 auto; padding: 24px 16px 60px; }
 
-.ferramentas-page h1 { font-family: 'Plus Jakarta Sans', sans-serif; }
-.ferramentas-page a { text-decoration: none; }
+.ferr-intro h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+.ferr-intro p { font-size: 14.5px; color: var(--ink-soft); margin-bottom: 22px; }
 
-.ferramentas-page main.page {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 28px 16px 60px;
-}
-
-.ferramentas-page .placeholder {
-  background: var(--surface);
+/* ---------- grelha de ferramentas ---------- */
+.ferr-grid { display: flex; flex-direction: column; gap: 10px; }
+.ferr-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 18px;
   border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-sm);
-  padding: 40px 28px;
-  text-align: center;
-  margin-top: 24px;
+  background: var(--surface);
+  border-radius: 16px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
+.ferr-card:hover { border-color: #DDD8D3; box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.ferr-card-icon {
+  width: 42px; height: 42px; border-radius: 12px; margin-bottom: 8px;
+  background: var(--bg-soft); color: var(--ink-soft);
+  display: flex; align-items: center; justify-content: center;
+}
+.ferr-card-icon svg { width: 20px; height: 20px; }
+.ferr-card .nome { font-weight: 700; font-size: 15px; }
+.ferr-card .desc { font-size: 12.5px; color: var(--ink-soft); }
 
-.ferramentas-page .placeholder-icon {
-  width: 56px;
-  height: 56px;
-  margin: 0 auto 18px;
+.ferr-voltar {
+  display: flex; align-items: center; gap: 10px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800; font-size: 17px; color: var(--ink);
+  padding: 0; margin-bottom: 20px;
+}
+.ferr-voltar svg { width: 20px; height: 20px; color: var(--ink-soft); }
+
+/* ---------- calculadora ---------- */
+.calc-display {
+  background: #1C1B1A;
+  color: #fff;
+  border-radius: 16px;
+  padding: 26px 20px;
+  font-size: 34px;
+  font-weight: 700;
+  text-align: right;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.calc-btn {
+  padding: 18px 0;
   border-radius: 14px;
-  background: var(--accent-tint);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .12s ease, transform .1s ease;
+}
+.calc-btn:active { transform: scale(.95); }
+.calc-btn:hover { background: var(--bg-soft); }
+.calc-btn.op { background: var(--bg-soft); color: var(--accent); }
+.calc-btn.clear { color: var(--accent); }
+.calc-btn.eq { grid-column: span 4; background: var(--accent); color: #fff; border: none; }
+.calc-btn.eq:hover { background: var(--accent-hover); }
+
+/* ---------- conversor ---------- */
+.conv-cats { display: flex; gap: 8px; margin-bottom: 20px; }
+.conv-cat {
+  flex: 1;
+  padding: 9px 0;
+  border-radius: 100px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.conv-cat.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+.conv-row { display: flex; gap: 10px; }
+.conv-row input, .conv-row select {
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-size: 16px;
+  font-family: inherit;
+  background: var(--surface);
+  color: var(--ink);
+}
+.conv-row input { flex: 1; min-width: 0; }
+.conv-row select { width: 84px; flex-shrink: 0; font-weight: 700; }
+.conv-resultado {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 13px 14px;
+  font-size: 16px;
+  font-weight: 700;
+  background: var(--bg-soft);
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.conv-arrow { display: flex; justify-content: center; margin: 12px 0; color: var(--ink-soft); }
+.conv-arrow svg { width: 20px; height: 20px; }
+
+/* ---------- formulário ---------- */
+.form-grupo { margin-bottom: 22px; }
+.form-grupo-head { display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 14.5px; margin-bottom: 10px; }
+.form-grupo-head .dot { width: 9px; height: 9px; border-radius: 50%; }
+.form-lista { display: flex; flex-direction: column; gap: 8px; }
+.form-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-.ferramentas-page .placeholder-icon svg { width: 26px; height: 26px; stroke: var(--accent); }
-
-.ferramentas-page .placeholder h1 {
-  font-size: 22px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  margin-bottom: 10px;
-}
-.ferramentas-page .placeholder > p {
-  font-size: 14.5px;
-  color: var(--ink-soft);
-  line-height: 1.6;
-  max-width: 420px;
-  margin: 0 auto 20px;
-}
-
-.ferramentas-page .placeholder-list {
-  list-style: none;
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 28px;
-}
-.ferramentas-page .placeholder-list li {
-  padding: 12px 14px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px;
   border: 1px solid var(--border);
+  background: var(--surface);
   border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
-.ferramentas-page .placeholder-list .t { font-weight: 700; font-size: 14px; }
-.ferramentas-page .placeholder-list .s { font-size: 13px; color: var(--ink-soft); }
-
-.ferramentas-page .btn-primary {
-  display: inline-block;
-  background: var(--accent);
-  color: #fff;
-  font-weight: 700;
-  font-size: 14px;
-  padding: 12px 22px;
-  border-radius: 12px;
-  transition: background .15s ease;
-}
-.ferramentas-page .btn-primary:hover { background: var(--accent-hover); }
+.form-item .nome { font-size: 13px; color: var(--ink-soft); font-weight: 600; }

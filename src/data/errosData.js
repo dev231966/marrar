@@ -1,0 +1,67 @@
+// ---------------------------------------------------------------------------
+// DADOS MOCK — erros guardados pelo estudante.
+// Quando o backend estiver pronto: GET /erros devolve algo com esta forma.
+// ---------------------------------------------------------------------------
+
+export const errosGuardados = [
+  {
+    id: "e1",
+    materiaId: "quimica",
+    materiaNome: "Química",
+    tema: "Estequiometria",
+    cor: "#1E9E5A",
+    pergunta: "Quantos mols de O₂ são necessários para queimar 2 mols de CH₄?",
+    tuaResposta: "2 mols",
+    respostaCerta: "4 mols",
+    explicacao: "$CH_4 + 2O_2 \\rightarrow CO_2 + 2H_2O$ — logo, 2 mols de metano precisam de 4 mols de O₂.",
+    data: "Ontem",
+  },
+  {
+    id: "e2",
+    materiaId: "matematica",
+    materiaNome: "Matemática",
+    tema: "Funções Quadráticas",
+    cor: "#D6342C",
+    pergunta: "Qual é o discriminante de $x^2 - 5x + 6 = 0$?",
+    tuaResposta: "Δ = -1",
+    respostaCerta: "Δ = 1",
+    explicacao: "$\\Delta = b^2 - 4ac = 25 - 24 = 1$",
+    data: "2 dias",
+  },
+  {
+    id: "e3",
+    materiaId: "fisica",
+    materiaNome: "Física",
+    tema: "Cinemática",
+    cor: "#2F6FED",
+    pergunta: "Um carro acelera de 0 a 20 m/s em 4 s. Qual a distância percorrida?",
+    tuaResposta: "80 m",
+    respostaCerta: "40 m",
+    explicacao: "$d = \\frac{v_0+v}{2}\\cdot t = \\frac{0+20}{2}\\cdot4 = 40$ m",
+    data: "3 dias",
+  },
+  {
+    id: "e4",
+    materiaId: "quimica",
+    materiaNome: "Química",
+    tema: "Tabela Periódica",
+    cor: "#1E9E5A",
+    pergunta: "Qual grupo da tabela periódica é o dos halogéneos?",
+    tuaResposta: "Grupo 18",
+    respostaCerta: "Grupo 17",
+    explicacao: "Os halogéneos (F, Cl, Br, I...) formam o grupo 17.",
+    data: "5 dias",
+  },
+  {
+    id: "e5",
+    materiaId: "biologia",
+    materiaNome: "Biologia",
+    tema: "Genética",
+    cor: "#9B59B6",
+    pergunta: "Num cruzamento Aa x aa, qual a proporção fenotípica esperada?",
+    tuaResposta: "3:1",
+    respostaCerta: "1:1",
+    explicacao: "Cruzamento-teste: metade dos descendentes será Aa e metade aa.",
+    data: "1 semana",
+  },
+];
