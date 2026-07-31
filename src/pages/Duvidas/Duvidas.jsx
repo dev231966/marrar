@@ -48,6 +48,12 @@ export default function Duvidas() {
     setErro(null);
     setCarregando(true);
 
+    // Timeout de 25s: o backend já tem o seu próprio timeout de ~20s por
+    // tentativa Gemini, este é uma rede de segurança para o pedido nunca
+    // ficar "parado" indefinidamente do lado do browser.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 25000);
+
     try {
       const resp = await fetch("/api/duvidas", {
         method: "POST",
@@ -57,18 +63,19 @@ export default function Duvidas() {
           historico: historicoAnterior,
           contexto: context,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       let dados = null;
       try {
         dados = await resp.json();
       } catch {
-        // resposta não veio em JSON (ex: erro 500 sem corpo, timeout do servidor, etc.)
+        // resposta não veio em JSON (ex: erro 500 sem corpo, etc.)
       }
 
       if (!resp.ok) {
-        // Mostra a mensagem real do servidor sempre que existir.
-        // Caso contrário, dá pelo menos o código HTTP em vez de um "erro" genérico.
         const motivo = dados?.erro || `O servidor respondeu com o código ${resp.status}.`;
         throw new Error(motivo);
       }
@@ -79,14 +86,20 @@ export default function Duvidas() {
 
       setMensagens((atual) => [...atual, { role: "model", texto: dados.texto }]);
     } catch (e) {
+      clearTimeout(timeoutId);
+
       // Remove a pergunta do utilizador que ficou sem resposta, para não deixar
       // uma mensagem "pendurada" no histórico sem indicação do que aconteceu.
       setMensagens((atual) => atual.filter((m) => m !== novoHistorico[novoHistorico.length - 1]));
 
-      const mensagemErro =
-        e?.message === "Failed to fetch"
-          ? "Não consegui ligar ao servidor. Verifica a tua ligação à internet."
-          : e?.message || "Não consegui responder agora. Tenta outra vez.";
+      let mensagemErro;
+      if (e?.name === "AbortError") {
+        mensagemErro = "A resposta está a demorar demasiado. Tenta novamente.";
+      } else if (e?.message === "Failed to fetch") {
+        mensagemErro = "Não consegui ligar ao servidor. Verifica a tua ligação à internet.";
+      } else {
+        mensagemErro = e?.message || "Não consegui responder agora. Tenta outra vez.";
+      }
 
       setErro(mensagemErro);
     } finally {

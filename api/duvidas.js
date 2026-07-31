@@ -6,36 +6,56 @@ async function chamarGemini(instrucaoSistema, contents, apiKey, tentativas = 3) 
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`;
 
   let ultimaResposta = null;
+  let ultimoErro = null;
 
   for (let i = 0; i < tentativas; i++) {
-    const resposta = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-goog-api-key": apiKey,
-      },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: instrucaoSistema }] },
-        contents,
-      }),
-    });
+    const controller = new AbortController();
+    // Timeout de 20s por tentativa: evita que o pedido fique pendurado
+    // indefinidamente se a Gemini estiver lenta a responder.
+    const timeoutId = setTimeout(() => controller.abort(), 20000);
 
-    if (resposta.ok) return resposta;
+    try {
+      const resposta = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-goog-api-key": apiKey,
+        },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: instrucaoSistema }] },
+          contents,
+        }),
+        signal: controller.signal,
+      });
 
-    ultimaResposta = resposta;
+      clearTimeout(timeoutId);
 
-    // Só faz retry em erros temporários (503 = sobrecarga, 429 = rate limit)
-    if (resposta.status !== 503 && resposta.status !== 429) {
-      return resposta; // erro definitivo (404, 400, etc) — não adianta tentar de novo
+      if (resposta.ok) return resposta;
+
+      ultimaResposta = resposta;
+
+      // Só faz retry em erros temporários (503 = sobrecarga, 429 = rate limit)
+      if (resposta.status !== 503 && resposta.status !== 429) {
+        return resposta; // erro definitivo (404, 400, etc) — não adianta tentar de novo
+      }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      ultimoErro = err;
+      // erro de rede ou timeout: vale a pena tentar de novo dentro do limite de tentativas
     }
 
-    // espera crescente: 1s, 2s, 4s
-    const espera = 1000 * Math.pow(2, i);
-    console.warn(`Gemini indisponível (tentativa ${i + 1}/${tentativas}), a aguardar ${espera}ms...`);
-    await new Promise((r) => setTimeout(r, espera));
+    // espera crescente: 1s, 2s, 4s (só entre tentativas, não depois da última)
+    if (i < tentativas - 1) {
+      const espera = 1000 * Math.pow(2, i);
+      console.warn(`Gemini indisponível/lenta (tentativa ${i + 1}/${tentativas}), a aguardar ${espera}ms...`);
+      await new Promise((r) => setTimeout(r, espera));
+    }
   }
 
-  return ultimaResposta;
+  if (ultimaResposta) return ultimaResposta;
+
+  // Todas as tentativas falharam por timeout/erro de rede, nunca chegou a haver resposta HTTP
+  throw ultimoErro || new Error("Falha desconhecida ao contactar a Gemini.");
 }
 
 export default async function handler(req, res) {
@@ -103,9 +123,6 @@ export default async function handler(req, res) {
       const detalhe = await resposta.text();
       console.error("Gemini API error:", resposta.status, detalhe);
 
-      // Tenta extrair a mensagem específica devolvida pela Gemini, para o
-      // utilizador (e nós, a depurar) sabermos exatamente o que se passou
-      // em vez de um "Falha ao contactar a IA" genérico.
       let mensagemGemini = null;
       try {
         const json = JSON.parse(detalhe);
@@ -123,6 +140,8 @@ export default async function handler(req, res) {
         erroUtilizador = "O modelo de IA configurado não foi encontrado (erro de configuração no servidor).";
       } else if (resposta.status === 400) {
         erroUtilizador = `Pedido inválido enviado à IA${mensagemGemini ? `: ${mensagemGemini}` : "."}`;
+      } else if (resposta.status === 403) {
+        erroUtilizador = `Acesso negado pela IA${mensagemGemini ? `: ${mensagemGemini}` : " (verifica a chave de API)."}`;
       } else {
         erroUtilizador = `Falha ao contactar a IA (código ${resposta.status})${mensagemGemini ? `: ${mensagemGemini}` : "."}`;
       }
@@ -138,6 +157,10 @@ export default async function handler(req, res) {
     return res.status(200).json({ texto });
   } catch (err) {
     console.error("Erro no processamento:", err);
-    return res.status(500).json({ erro: `Erro interno no servidor: ${err.message}` });
+    const mensagem =
+      err.name === "AbortError"
+        ? "A IA demorou demasiado tempo a responder. Tenta novamente."
+        : `Erro interno no servidor: ${err.message}`;
+    return res.status(504).json({ erro: mensagem });
   }
 }
