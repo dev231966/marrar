@@ -1,4 +1,3 @@
-cat > api/auth.js << 'EOF'
 // /api/auth.js
 // Endpoint: POST /api/auth
 // Body: { acao: "registar" | "entrar", nome?, email, palavraPasse }
@@ -81,8 +80,6 @@ export default async function handler(req, res) {
       });
       const user = resultado.rows[0];
 
-      // Mensagem genérica de propósito — não revela se foi o email ou a
-      // palavra-passe que falhou, para não facilitar enumeração de contas.
       if (!user) {
         return res.status(401).json({ erro: "Email ou palavra-passe incorrectos." });
       }
@@ -106,4 +103,3 @@ export default async function handler(req, res) {
     return res.status(500).json({ erro: "Erro interno no servidor." });
   }
 }
-EOF
