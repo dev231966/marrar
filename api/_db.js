@@ -1,6 +1,3 @@
-cd ~/web/marrar
-mkdir -p api
-cat > api/_db.js << 'EOF'
 // /api/_db.js
 // Cliente libsql partilhado. Todas as rotas em /api importam daqui em vez de
 // abrirem ligação própria — assim há só um sítio a configurar/mudar.
@@ -10,6 +7,7 @@ cat > api/_db.js << 'EOF'
 // como endpoint.
 
 import { createClient } from "@libsql/client";
+import { randomBytes } from "node:crypto";
 
 let cliente = null;
 
@@ -29,16 +27,10 @@ export function getDb() {
   return cliente;
 }
 
-// Gera um token de sessão aleatório e seguro (hex, 48 bytes).
 export function gerarTokenSessao() {
-  const bytes = new Uint8Array(48);
-  crypto.getRandomValues(bytes);
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+  return randomBytes(48).toString("hex");
 }
 
-// Confirma se o pedido tem uma sessão válida (via header Authorization: Bearer <token>).
-// Devolve o user_id se válido, ou null caso contrário. Também apaga sessões
-// expiradas encontradas, para a tabela não crescer para sempre.
 export async function autenticar(req) {
   const auth = req.headers.authorization || "";
   const token = auth.startsWith("Bearer ") ? auth.slice(7) : null;
@@ -60,4 +52,3 @@ export async function autenticar(req) {
 
   return sessao.user_id;
 }
-EOF
