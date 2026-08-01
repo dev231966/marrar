@@ -100,6 +100,12 @@ export default async function handler(req, res) {
     return res.status(400).json({ erro: "Acção inválida. Usa 'registar' ou 'entrar'." });
   } catch (e) {
     console.error("Erro em /api/auth:", e);
-    return res.status(500).json({ erro: "Erro interno no servidor." });
+    // MODO DEBUG TEMPORÁRIO: expõe o erro completo na resposta para
+    // diagnosticar sem depender dos logs truncados da Vercel CLI.
+    // Reverter para a mensagem genérica assim que o bug for encontrado.
+    return res.status(500).json({
+      erro: "Erro interno no servidor.",
+      debug: { message: e.message, code: e.code, stack: e.stack },
+    });
   }
 }
