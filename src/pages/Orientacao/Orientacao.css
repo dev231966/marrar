@@ -1,3 +1,64 @@
+.ori-page main.page { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+
+.ori-intro h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.ori-intro p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 24px; }
+
+.ori-secao { margin-bottom: 26px; }
+.ori-secao h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+
+.ori-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.ori-chip {
+  padding: 9px 15px;
+  border-radius: 100px;
+  border: 1px solid var(--border, #E9E6E2);
+  background: var(--surface, #fff);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink-soft, #6E6A66);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.ori-chip.active { background: var(--accent, #B00020); border-color: var(--accent, #B00020); color: #fff; }
+
+.ori-hint { font-size: 12.5px; color: var(--ink-soft); margin-top: 10px; text-align: center; }
+.ori-erro {
+  background: rgba(176, 0, 32, .08);
+  color: var(--accent, #B00020);
+  border: 1px solid rgba(176, 0, 32, .25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: .88rem;
+  margin-bottom: 16px;
+}
+
+.ori-resultado h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
+.ori-sub { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 24px; }
+
+.ori-cursos { display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }
+.ori-curso-card {
+  display: flex;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 16px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #E9E6E2);
+}
+.ori-curso-card .num {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--accent-tint, #FBE7E5);
+  color: var(--accent, #B00020);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.ori-curso-card h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 4px; }
+.ori-curso-card p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+
+.ori-acoes { display: flex; justify-content: center; }
+
+
 /* Barra de progresso */
 .ori-barra { height: 4px; background: var(--border, #E9E6E2); border-radius: 100px; margin-bottom: 28px; overflow: hidden; }
 .ori-barra-fill { height: 100%; background: var(--accent, #B00020); transition: width .35s ease; }
