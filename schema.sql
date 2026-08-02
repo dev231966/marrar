@@ -91,3 +91,14 @@ CREATE TABLE IF NOT EXISTS orientacao_resultados (
 );
 
 CREATE INDEX IF NOT EXISTS idx_orientacao_user ON orientacao_resultados(user_id, criado_em);
+
+CREATE TABLE IF NOT EXISTS notificacoes (
+  id            SERIAL PRIMARY KEY,
+  user_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  tipo          TEXT NOT NULL DEFAULT 'geral',
+  conteudo_enc  TEXT NOT NULL,
+  lida          BOOLEAN NOT NULL DEFAULT false,
+  criado_em     TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_notificacoes_user ON notificacoes(user_id, criado_em);
