@@ -1,6 +1,7 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './DashboardSidebar.css';
 import Logo from "../Logo"
+import { useAuth } from '../../context/AuthContext';
 
 const mainNav = [
   { label: 'Visão Geral', path: '/dashboard', icon: <path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z" /> },
@@ -13,10 +14,22 @@ const generalNav = [
   { label: 'Ferramentas', path: '/dashboard/ferramentas', icon: <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.1-3.1a4 4 0 01-5.4 5.4L6.7 20a2 2 0 01-2.8-2.8L11 8.5a4 4 0 015.4-5.4l-3 3z" /> },
   { label: 'Caderno de Erros', path: '/dashboard/erros', icon: <><circle cx="12" cy="12" r="9" /><path d="M9.1 9a3 3 0 015.8 1c0 2-3 2-3 4" /><path d="M12 17h.01" /></> },
   { label: 'Meu Material', path: '/dashboard/material', icon: <><path d="M4 19.5A2.5 2.5 0 016.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" /></> },
+  { label: 'Orientação Vocacional', path: '/dashboard/orientacao', icon: <><circle cx="12" cy="12" r="10" /><path d="M16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z" /></> },
+  { label: 'Exames', path: '/dashboard/exames', icon: <><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" /><path d="M14 2v6h6" /><path d="M12 18v-6M9 15l3 3 3-3" /></> },
 ];
 
 export default function DashboardSidebar({ isOpen, onClose }) {
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const { user, sair } = useAuth();
+  const nomeUtilizador = user?.nome || 'Estudante';
+  const inicial = nomeUtilizador.trim().charAt(0).toUpperCase() || '?';
+
+  function handleSair() {
+    sair();
+    onClose?.();
+    navigate('/login', { replace: true });
+  }
 
   return (
     <>
@@ -84,9 +97,9 @@ export default function DashboardSidebar({ isOpen, onClose }) {
         <div className="side-bottom">
           <div className="nav-divider" />
           <Link to="/dashboard/perfil" className="profile-row" onClick={onClose}>
-            <div className="profile-avatar">J</div>
+            <div className="profile-avatar">{inicial}</div>
             <div>
-              <div className="profile-name">Juvêncio Penga</div>
+              <div className="profile-name">{nomeUtilizador}</div>
               <div className="profile-sub">Ver perfil</div>
             </div>
           </Link>
@@ -97,6 +110,14 @@ export default function DashboardSidebar({ isOpen, onClose }) {
             </svg>
             Configurações
           </Link>
+          <button type="button" className="nav-item nav-item-logout" onClick={handleSair}>
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+              <path d="M16 17l5-5-5-5" />
+              <path d="M21 12H9" />
+            </svg>
+            Sair
+          </button>
         </div>
       </nav>
     </>

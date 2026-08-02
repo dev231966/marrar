@@ -1,3 +1,4 @@
+import { useAuth } from '../../context/AuthContext';
 import DashboardHeader from '../../components/layout/DashboardHeader';
 import ScoreCard from './sections/ScoreCard';
 import ContinueCard from './sections/ContinueCard';
@@ -9,7 +10,10 @@ import ActivityFeed from './sections/ActivityFeed';
 import Achievements from './sections/Achievements';
 import './Dashboard.css';
 
-export default function Dashboard({ studentName = 'Juvêncio', streakDays = 7 }) {
+export default function Dashboard({ streakDays = 7 }) {
+  const { user } = useAuth();
+  const studentName = user?.nome?.split(' ')[0] || 'Estudante';
+
   return (
     <div className="dashboard-page">
       <DashboardHeader />

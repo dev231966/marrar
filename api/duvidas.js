@@ -12,6 +12,34 @@
 // este ainda é válido.
 const MODELO = "openai/gpt-oss-120b";
 
+import { autenticar, ensureSchema, getDb } from "./_db.js";
+
+/**
+ * Grava pergunta + resposta em duvidas_historico, associadas ao utilizador
+ * autenticado. Nunca deve derrubar o pedido de IA: se a base de dados
+ * falhar (ex: DATABASE_URL da Neon ainda não configurada, ou fora do ar),
+ * a resposta da IA já foi entregue ao estudante — só o histórico é que fica
+ * por gravar, e o frontend não trava por causa disso.
+ */
+async function gravarHistorico(userId, pergunta, resposta, contexto) {
+  if (!userId) return;
+  try {
+    await ensureSchema();
+    const db = getDb();
+    const contextoJson = contexto ? JSON.stringify(contexto) : null;
+    await db.execute({
+      sql: "INSERT INTO duvidas_historico (user_id, role, texto, contexto_json) VALUES (?, 'user', ?, ?)",
+      args: [userId, pergunta, contextoJson],
+    });
+    await db.execute({
+      sql: "INSERT INTO duvidas_historico (user_id, role, texto, contexto_json) VALUES (?, 'model', ?, ?)",
+      args: [userId, resposta, contextoJson],
+    });
+  } catch (e) {
+    console.error("Não foi possível gravar o histórico de dúvidas:", e.message);
+  }
+}
+
 async function chamarGroq(instrucaoSistema, messages, apiKey, tentativas = 3) {
   const url = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -163,6 +191,12 @@ export default async function handler(req, res) {
     const texto =
       dados?.choices?.[0]?.message?.content ||
       "Não consegui responder a isso. Tenta reformular a pergunta.";
+
+    // Aguarda-se a gravação (em serverless a função termina assim que a
+    // resposta é enviada, por isso "fire and forget" perderia a escrita) —
+    // mas uma falha aqui nunca impede a resposta da IA de chegar ao estudante.
+    const userId = await autenticar(req).catch(() => null);
+    await gravarHistorico(userId, pergunta, texto, contexto);
 
     return res.status(200).json({ texto });
   } catch (err) {

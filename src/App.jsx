@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Loader from './components/Loader';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 const Home = lazy(() => import('./pages/Home/Home'));
 const Login = lazy(() => import('./pages/Login/Login'));
@@ -15,7 +16,15 @@ const Ferramentas = lazy(() => import('./pages/Ferramentas/Ferramentas'));
 const CadernoDeErros = lazy(() => import('./pages/CadernoDeErros/CadernoDeErros'));
 const MeuMaterial = lazy(() => import('./pages/MeuMaterial/MeuMaterial'));
 const Payment = lazy(() => import('./pages/Payment/Payment'));
+const Orientacao = lazy(() => import('./pages/Orientacao/Orientacao'));
+const Exames = lazy(() => import('./pages/Exames/Exames'));
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
+
+// Todas as rotas /dashboard/* passam por aqui dentro — uma só chamada a
+// ProtectedRoute em vez de repetir em cada <Route>.
+function Protegida({ children }) {
+  return <ProtectedRoute>{children}</ProtectedRoute>;
+}
 
 export default function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
@@ -37,17 +46,19 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard/explicacao" element={<Explicacao />} />
-        <Route path="/dashboard/explicacao/:materiaId" element={<Materia />} />
-        <Route path="/dashboard/explicacao/:materiaId/:temaId" element={<Aula />} />
-        <Route path="/dashboard/duvidas" element={<Duvidas />} />
-        <Route path="/dashboard/exercicios" element={<Exercicios />} />
-        <Route path="/dashboard/evolucao" element={<Evolucao />} />
-        <Route path="/dashboard/ferramentas" element={<Ferramentas />} />
-        <Route path="/dashboard/erros" element={<CadernoDeErros />} />
-        <Route path="/dashboard/material" element={<MeuMaterial />} />
-        <Route path="/dashboard/plano" element={<Payment />} />
+        <Route path="/dashboard" element={<Protegida><Dashboard /></Protegida>} />
+        <Route path="/dashboard/explicacao" element={<Protegida><Explicacao /></Protegida>} />
+        <Route path="/dashboard/explicacao/:materiaId" element={<Protegida><Materia /></Protegida>} />
+        <Route path="/dashboard/explicacao/:materiaId/:temaId" element={<Protegida><Aula /></Protegida>} />
+        <Route path="/dashboard/duvidas" element={<Protegida><Duvidas /></Protegida>} />
+        <Route path="/dashboard/exercicios" element={<Protegida><Exercicios /></Protegida>} />
+        <Route path="/dashboard/evolucao" element={<Protegida><Evolucao /></Protegida>} />
+        <Route path="/dashboard/ferramentas" element={<Protegida><Ferramentas /></Protegida>} />
+        <Route path="/dashboard/erros" element={<Protegida><CadernoDeErros /></Protegida>} />
+        <Route path="/dashboard/material" element={<Protegida><MeuMaterial /></Protegida>} />
+        <Route path="/dashboard/plano" element={<Protegida><Payment /></Protegida>} />
+        <Route path="/dashboard/orientacao" element={<Protegida><Orientacao /></Protegida>} />
+        <Route path="/dashboard/exames" element={<Protegida><Exames /></Protegida>} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>

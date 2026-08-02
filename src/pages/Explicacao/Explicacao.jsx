@@ -1,12 +1,21 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { materias, recentes, blogPosts, searchConteudo } from "../../data/explicacaoData";
 import Mascot from "../../components/Mascot";
+import ContinuarCard from "../../components/ContinuarCard";
 import "./Explicacao.css";
 
 export default function Explicacao() {
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const results = query.trim() ? searchConteudo(query) : null;
+
+  const continuarItems = recentes.map((r) => ({
+    key: `${r.materiaId}/${r.temaId}`,
+    titulo: r.titulo,
+    subtitulo: r.subtitulo,
+    onClick: () => navigate(`/dashboard/explicacao/${r.materiaId}/${r.temaId}`),
+  }));
 
   return (
     <div className="exp-page">
@@ -63,20 +72,7 @@ export default function Explicacao() {
             </div>
           </section>
 
-          <section className="exp-section">
-            <h2>Continuar de onde paraste</h2>
-            <div className="exp-recentes">
-              {recentes.map((r) => (
-                <Link key={`${r.materiaId}/${r.temaId}`} to={`/dashboard/explicacao/${r.materiaId}/${r.temaId}`} className="exp-recente-row">
-                  <div className="t">{r.titulo}</div>
-                  <div className="s">{r.subtitulo}</div>
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 18l6-6-6-6" />
-                  </svg>
-                </Link>
-              ))}
-            </div>
-          </section>
+          <ContinuarCard items={continuarItems} />
 
           <section className="exp-section">
             <h2>Blog</h2>

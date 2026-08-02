@@ -1,0 +1,27 @@
+.continuar-secao { margin-bottom: 30px; }
+.continuar-secao h2 {
+  font-size: 15px;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.continuar-lista { display: flex; flex-direction: column; gap: 10px; }
+
+.continuar-linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #E9E6E2);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  color: inherit;
+}
+.continuar-linha:hover { border-color: var(--accent, #B00020); }
+.continuar-linha .t { font-size: 14px; font-weight: 700; }
+.continuar-linha .s { font-size: 12px; color: var(--ink-soft, #6E6A66); margin-left: 4px; }
+.continuar-linha svg { width: 16px; height: 16px; margin-left: auto; color: var(--ink-soft, #6E6A66); flex-shrink: 0; }

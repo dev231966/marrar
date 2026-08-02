@@ -12,6 +12,12 @@ dist
 dist-ssr
 *.local
 
+# Base de dados local (fallback quando TURSO_* não está configurado)
+marrar.db
+marrar.db-*
+*.db
+*.db-*
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,3 +32,4 @@ dist-ssr
 .env
 .vercel
 .env
+.env*

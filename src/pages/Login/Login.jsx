@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import './Login.css';
 
 function EyeIcon() {
@@ -59,7 +60,11 @@ function Field({ id, label, type, value, onChange, onBlur, touched, valid, hasTo
 
 export default function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { entrar, registar } = useAuth();
+  const destino = location.state?.de || '/dashboard';
   const [activeTab, setActiveTab] = useState('login');
+  const [authError, setAuthError] = useState(null);
 
   // --- login state ---
   const [loginEmail, setLoginEmail] = useState('');
@@ -71,15 +76,19 @@ export default function Login() {
   const loginPasswordValid = loginPassword.length >= 6;
   const loginFormValid = loginEmailValid && loginPasswordValid;
 
-  function handleLoginSubmit(event) {
+  async function handleLoginSubmit(event) {
     event.preventDefault();
-    if (!loginFormValid) return;
+    if (!loginFormValid || loginLoading) return;
+    setAuthError(null);
     setLoginLoading(true);
-    // TODO: ligar à API de autenticação real.
-    setTimeout(() => {
+    try {
+      await entrar(loginEmail, loginPassword);
+      navigate(destino, { replace: true });
+    } catch (e) {
+      setAuthError(e.message || 'Não foi possível entrar. Tenta novamente.');
+    } finally {
       setLoginLoading(false);
-      navigate('/dashboard');
-    }, 1200);
+    }
   }
 
   // --- register state ---
@@ -102,15 +111,19 @@ export default function Login() {
     ? 'Mínimo de 8 caracteres, com número'
     : strength >= 3 ? 'Palavra-passe forte' : strength === 2 ? 'Palavra-passe razoável' : 'Mínimo de 8 caracteres, com número';
 
-  function handleRegisterSubmit(event) {
+  async function handleRegisterSubmit(event) {
     event.preventDefault();
-    if (!registerFormValid) return;
+    if (!registerFormValid || regLoading) return;
+    setAuthError(null);
     setRegLoading(true);
-    // TODO: ligar à API de registo real.
-    setTimeout(() => {
+    try {
+      await registar(name, regEmail, regPassword);
+      navigate(destino, { replace: true });
+    } catch (e) {
+      setAuthError(e.message || 'Não foi possível criar a conta. Tenta novamente.');
+    } finally {
       setRegLoading(false);
-      navigate('/dashboard');
-    }, 1200);
+    }
   }
 
   return (
@@ -123,6 +136,8 @@ export default function Login() {
 
       <div className="card">
         <h1>{activeTab === 'login' ? 'Entrar na sua conta' : 'Criar a sua conta'}</h1>
+
+        {authError && <p className="auth-error" role="alert">{authError}</p>}
 
         {activeTab === 'login' ? (
           <form onSubmit={handleLoginSubmit}>

@@ -69,6 +69,16 @@ nav.tabs[data-active="register"] .tab-pill { transform: translateX(100%); }
 
 .card form { display: flex; flex-direction: column; gap: 15px; }
 
+.auth-error {
+  background: rgba(176, 0, 32, .08);
+  color: var(--accent, #B00020);
+  border: 1px solid rgba(176, 0, 32, .25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: .88rem;
+  margin: -6px 0 14px;
+}
+
 .field { position: relative; }
 .field input {
   width: 100%;

@@ -1,10 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/layout/DashboardHeader";
 import Mathmarrar from "../../components/Mathmarrar";
 import { materias } from "../../data/explicacaoData";
-import { errosGuardados } from "../../data/errosData";
+import { errosGuardados as errosMock } from "../../data/errosData";
+import { useAuth, authFetch } from "../../context/AuthContext";
 import "./CadernoDeErros.css";
+
+function tempoRelativo(iso) {
+  if (!iso) return "";
+  // Vem como TIMESTAMPTZ do Postgres, serializado em JSON já como ISO 8601
+  // válido (ex: "2026-08-02T10:00:00.000Z") — não precisa de correcção manual.
+  const diffMs = Date.now() - new Date(iso).getTime();
+  const dias = Math.floor(diffMs / 86400000);
+  if (dias <= 0) return "Hoje";
+  if (dias === 1) return "Ontem";
+  if (dias < 7) return `Há ${dias} dias`;
+  return `Há ${Math.floor(dias / 7)} semanas`;
+}
 
 function renderComFormula(texto) {
   const partes = texto.split(/(\$[^$]+\$)/g);
@@ -17,11 +30,34 @@ function renderComFormula(texto) {
 
 export default function CadernoDeErros() {
   const navigate = useNavigate();
+  const { token } = useAuth();
   const [filtro, setFiltro] = useState("todas");
   const [abertoId, setAbertoId] = useState(null);
+  const [errosGuardados, setErrosGuardados] = useState(null); // null = ainda a carregar
+
+  useEffect(() => {
+    let cancelado = false;
+    authFetch(token, "/api/erros")
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("falhou"))))
+      .then((dados) => {
+        if (cancelado) return;
+        const lista = (dados.erros || []).map((e) => ({
+          ...e,
+          cor: materias.find((m) => m.id === e.materiaId)?.cor || "#B00020",
+          data: tempoRelativo(e.criadoEm),
+        }));
+        setErrosGuardados(lista);
+      })
+      // API/BD indisponível: mostra os dados de demonstração em vez de um
+      // ecrã em branco, para a página nunca ficar "morta".
+      .catch(() => !cancelado && setErrosGuardados(errosMock));
+
+    return () => { cancelado = true; };
+  }, [token]);
 
   const filtros = [{ id: "todas", nome: "Todas" }, ...materias.map((m) => ({ id: m.id, nome: m.nome }))];
-  const erros = filtro === "todas" ? errosGuardados : errosGuardados.filter((e) => e.materiaId === filtro);
+  const carregando = errosGuardados === null;
+  const erros = carregando ? [] : (filtro === "todas" ? errosGuardados : errosGuardados.filter((e) => e.materiaId === filtro));
 
   return (
     <div className="err-page">
@@ -45,7 +81,11 @@ export default function CadernoDeErros() {
           ))}
         </div>
 
-        {erros.length === 0 ? (
+        {carregando ? (
+          <div className="err-vazio">
+            <p>A carregar o teu caderno de erros…</p>
+          </div>
+        ) : erros.length === 0 ? (
           <div className="err-vazio">
             <svg viewBox="0 0 120 120" fill="none">
               <circle cx="60" cy="60" r="56" fill="var(--green-tint)" />

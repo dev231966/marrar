@@ -4,7 +4,7 @@
 // Devolve: { user: { id, nome, email }, token } ou { erro }
 
 import bcrypt from "bcryptjs";
-import { getDb, gerarTokenSessao } from "./_db.js";
+import { getDb, gerarTokenSessao, ensureSchema } from "./_db.js";
 
 const DIAS_SESSAO = 30;
 
@@ -38,6 +38,7 @@ export default async function handler(req, res) {
 
   let db;
   try {
+    await ensureSchema();
     db = getDb();
   } catch (e) {
     console.error("Erro de configuração da base de dados:", e);
@@ -60,11 +61,11 @@ export default async function handler(req, res) {
 
       const hash = await bcrypt.hash(palavraPasse, 10);
       const resultado = await db.execute({
-        sql: "INSERT INTO users (nome, email, password_hash) VALUES (?, ?, ?)",
+        sql: "INSERT INTO users (nome, email, password_hash) VALUES (?, ?, ?) RETURNING id",
         args: [nome.trim(), email, hash],
       });
 
-      const userId = Number(resultado.lastInsertRowid);
+      const userId = resultado.rows[0].id;
       const token = await criarSessao(db, userId);
 
       return res.status(201).json({
@@ -100,12 +101,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ erro: "Acção inválida. Usa 'registar' ou 'entrar'." });
   } catch (e) {
     console.error("Erro em /api/auth:", e);
-    // MODO DEBUG TEMPORÁRIO: expõe o erro completo na resposta para
-    // diagnosticar sem depender dos logs truncados da Vercel CLI.
-    // Reverter para a mensagem genérica assim que o bug for encontrado.
-    return res.status(500).json({
-      erro: "Erro interno no servidor.",
-      debug: { message: e.message, code: e.code, stack: e.stack },
-    });
+    return res.status(500).json({ erro: "Erro interno no servidor." });
   }
 }

@@ -1,18 +1,50 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import AiConteudo from "../../components/AiConteudo";
+import ContinuarCard from "../../components/ContinuarCard";
+import { useAuth, authFetch } from "../../context/AuthContext";
 import "./Duvidas.css";
 
 export default function Duvidas() {
   const navigate = useNavigate();
   const { state } = useLocation();
   const context = state?.context;
+  const { token } = useAuth();
 
   const [mensagens, setMensagens] = useState([]); // { role: "user"|"model", texto }
   const [input, setInput] = useState("");
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
+  const [ultimaConversa, setUltimaConversa] = useState(null); // resumo para "continuar de onde paraste"
   const bottomRef = useRef(null);
+
+  // Carrega a última conversa guardada para oferecer "continuar de onde
+  // paraste" — reaproveitando a mesma interface usada em Explicação. Se a
+  // API/BD falhar (ainda sem Turso configurado, rede em baixo, etc.), o chat
+  // simplesmente começa vazio, sem travar nada.
+  useEffect(() => {
+    if (!token || context?.aulaTitulo) return; // com contexto de aula, começa sempre uma conversa nova e focada
+    let cancelado = false;
+
+    authFetch(token, "/api/historico")
+      .then((r) => (r.ok ? r.json() : { mensagens: [] }))
+      .then((dados) => {
+        if (cancelado) return;
+        const hist = Array.isArray(dados.mensagens) ? dados.mensagens : [];
+        if (hist.length === 0) return;
+        const ultimaPergunta = [...hist].reverse().find((m) => m.role === "user");
+        setUltimaConversa({ historico: hist, resumo: ultimaPergunta?.texto || "" });
+      })
+      .catch(() => {}); // sem sorte a ligar ao histórico — segue-se com chat vazio
+
+    return () => { cancelado = true; };
+  }, [token, context]);
+
+  function continuarConversaAnterior() {
+    if (!ultimaConversa) return;
+    setMensagens(ultimaConversa.historico.map((m) => ({ role: m.role, texto: m.texto })));
+    setUltimaConversa(null);
+  }
 
   async function enviar(textoForcado) {
     const pergunta = (textoForcado ?? input).trim();
@@ -32,7 +64,7 @@ export default function Duvidas() {
     const timeoutId = setTimeout(() => controller.abort(), 25000);
 
     try {
-      const resp = await fetch("/api/duvidas", {
+      const resp = await authFetch(token, "/api/duvidas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -122,6 +154,17 @@ export default function Duvidas() {
               <button key={c} className="duv-chip" onClick={() => enviar(c)}>{c}</button>
             ))}
           </div>
+          {ultimaConversa && (
+            <ContinuarCard
+              titulo="Continuar de onde paraste"
+              items={[{
+                key: "ultima-conversa",
+                titulo: "A tua última conversa com a IA",
+                subtitulo: ultimaConversa.resumo.slice(0, 60) + (ultimaConversa.resumo.length > 60 ? "…" : ""),
+                onClick: continuarConversaAnterior,
+              }]}
+            />
+          )}
           {erro && <p className="duv-error">{erro}</p>}
         </div>
       ) : (
