@@ -80,3 +80,14 @@ CREATE INDEX IF NOT EXISTS idx_exercicios_materia_nivel ON exercicios_banco(mate
 
 -- Migração defensiva: bases criadas antes da coluna `nivel` existir.
 ALTER TABLE exercicios_banco ADD COLUMN IF NOT EXISTS nivel TEXT NOT NULL DEFAULT 'todos';
+
+CREATE TABLE IF NOT EXISTS orientacao_resultados (
+  id             SERIAL PRIMARY KEY,
+  user_id        INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  respostas_json TEXT NOT NULL,
+  sugestoes_json TEXT NOT NULL,
+  origem         TEXT NOT NULL CHECK (origem IN ('ia', 'regras')),
+  criado_em      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_orientacao_user ON orientacao_resultados(user_id, criado_em);
