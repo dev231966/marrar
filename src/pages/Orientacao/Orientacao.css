@@ -1,59 +1,84 @@
-.ori-page main.page { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
+/* Barra de progresso */
+.ori-barra { height: 4px; background: var(--border, #E9E6E2); border-radius: 100px; margin-bottom: 28px; overflow: hidden; }
+.ori-barra-fill { height: 100%; background: var(--accent, #B00020); transition: width .35s ease; }
 
-.ori-intro h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
-.ori-intro p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 24px; }
+/* Transição entre passos */
+.ori-passo { animation: slideIn .28s ease both; }
+.anim-frente { animation-name: slideIn; }
+.anim-tras { animation-name: slideBack; }
 
-.ori-secao { margin-bottom: 26px; }
-.ori-secao h2 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
-
-.ori-chips { display: flex; flex-wrap: wrap; gap: 8px; }
-.ori-chip {
-  padding: 9px 15px;
-  border-radius: 100px;
-  border: 1px solid var(--border, #E9E6E2);
-  background: var(--surface, #fff);
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--ink-soft, #6E6A66);
-  cursor: pointer;
-  transition: all .15s ease;
+@keyframes slideIn {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-.ori-chip.active { background: var(--accent, #B00020); border-color: var(--accent, #B00020); color: #fff; }
-
-.ori-hint { font-size: 12.5px; color: var(--ink-soft); margin-top: 10px; text-align: center; }
-.ori-erro {
-  background: rgba(176, 0, 32, .08);
-  color: var(--accent, #B00020);
-  border: 1px solid rgba(176, 0, 32, .25);
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-size: .88rem;
-  margin-bottom: 16px;
+@keyframes slideBack {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
 
-.ori-resultado h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 6px; }
-.ori-sub { font-size: 13.5px; color: var(--ink-soft); margin-bottom: 24px; }
+.ori-contagem { display: block; margin-top: 10px; font-size: 12.5px; color: var(--accent, #B00020); font-weight: 600; }
 
-.ori-cursos { display: flex; flex-direction: column; gap: 12px; margin-bottom: 26px; }
-.ori-curso-card {
-  display: flex;
-  gap: 14px;
-  padding: 18px;
-  border-radius: 16px;
-  background: var(--surface, #fff);
-  border: 1px solid var(--border, #E9E6E2);
-}
-.ori-curso-card .num {
-  width: 30px; height: 30px;
+.ori-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+.ori-nav .btn-primary { flex: 1; }
+
+/* Loading */
+.ori-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 0; gap: 16px; }
+.ori-spinner {
+  width: 34px; height: 34px;
+  border: 3px solid var(--border, #E9E6E2);
+  border-top-color: var(--accent, #B00020);
   border-radius: 50%;
-  background: var(--accent-tint, #FBE7E5);
-  color: var(--accent, #B00020);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 800;
-  font-size: 14px;
-  flex-shrink: 0;
+  animation: girar .7s linear infinite;
 }
-.ori-curso-card h3 { font-size: 15.5px; font-weight: 700; margin-bottom: 4px; }
-.ori-curso-card p { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+@keyframes girar { to { transform: rotate(360deg); } }
 
-.ori-acoes { display: flex; justify-content: center; }
+/* Revelação escalonada dos cards */
+.card-in { animation: cardIn .32s ease both; }
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.fade-in { animation: fadeIn .3s ease both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Barra de progresso + transições de passo — já enviadas antes, manter */
+.ori-barra { height: 4px; background: var(--border, #E9E6E2); border-radius: 100px; margin-bottom: 28px; overflow: hidden; }
+.ori-barra-fill { height: 100%; background: var(--accent, #B00020); transition: width .35s ease; }
+.ori-passo { animation: slideIn .28s ease both; }
+.anim-frente { animation-name: slideIn; }
+.anim-tras { animation-name: slideBack; }
+@keyframes slideIn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes slideBack { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: translateX(0); } }
+.ori-contagem { display: block; margin-top: 10px; font-size: 12.5px; color: var(--accent, #B00020); font-weight: 600; }
+.ori-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; gap: 12px; }
+.ori-nav .btn-primary { flex: 1; }
+.ori-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 0; gap: 16px; }
+.ori-spinner { width: 34px; height: 34px; border: 3px solid var(--border, #E9E6E2); border-top-color: var(--accent, #B00020); border-radius: 50%; animation: girar .7s linear infinite; }
+@keyframes girar { to { transform: rotate(360deg); } }
+.card-in { animation: cardIn .32s ease both; }
+@keyframes cardIn { from { opacity: 0; transform: translateY(10px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.fade-in { animation: fadeIn .3s ease both; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Card de resultado enriquecido */
+.ori-curso-card { flex-direction: column; gap: 10px; align-items: stretch; }
+.ori-curso-topo { display: flex; align-items: center; gap: 14px; }
+.ori-curso-titulo { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.ori-curso-titulo h3 { margin: 0; }
+
+.ori-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 100px;
+  white-space: nowrap;
+}
+.badge-seguro   { background: rgba(46, 160, 67, .12);  color: #1f8a3a; }
+.badge-alinhado { background: rgba(176, 0, 32, .1);     color: var(--accent, #B00020); }
+.badge-ousado   { background: rgba(255, 149, 0, .14);   color: #b56600; }
+
+.ori-porque { font-size: 13.5px; color: var(--ink-soft); line-height: 1.5; }
+
+.ori-linha { display: flex; flex-direction: column; gap: 2px; padding-top: 6px; border-top: 1px dashed var(--border, #E9E6E2); }
+.ori-linha-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em; color: var(--ink-soft); opacity: .7; }
+.ori-linha-valor { font-size: 13px; color: var(--ink, #1a1a1a); }

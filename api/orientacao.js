@@ -1,6 +1,6 @@
 // /api/orientacao.js
 // POST /api/orientacao  { interesses: string[], disciplinasFortes: string[], estilo: string }
-// -> { sugestoes: [{ curso, porque }], origem: "ia" | "regras" }
+// -> { sugestoes: [{ curso, perfil, porque, universidades, saidas }], origem: "ia" | "regras" }
 //
 // A IA entra para dar sugestões mais ricas e personalizadas; se falhar (sem
 // chave, rede em baixo, resposta inválida), cai para uma árvore de decisão
@@ -36,23 +36,31 @@ function sugerirComRegras(disciplinasFortes = [], interesses = []) {
   pontuadas.sort((a, b) => b.pontos - a.pontos);
   const top = pontuadas.slice(0, 3).map(({ curso, porque }) => ({ curso, porque }));
 
+  // O fallback de regras não tem perfil/universidades/saidas — é
+  // propositadamente mais simples. O frontend trata isto como opcional.
   return top.length > 0 ? top : FALLBACK_GENERICO;
 }
 
 async function sugerirComIA(disciplinasFortes, interesses, estilo, apiKey) {
   const instrucao = [
-    "És um orientador vocacional para estudantes moçambicanos do ensino secundário.",
-    `Disciplinas fortes: ${disciplinasFortes.join(", ") || "não indicadas"}.`,
+    "És um orientador vocacional experiente, especializado no sistema universitário de Moçambique.",
+    `Disciplinas fortes do estudante: ${disciplinasFortes.join(", ") || "não indicadas"}.`,
     `Interesses: ${interesses.join(", ") || "não indicados"}.`,
     estilo ? `Estilo de trabalho preferido: ${estilo}.` : "",
-    "Sugere exactamente 3 cursos universitários compatíveis, existentes em universidades moçambicanas.",
+    "",
+    "Sugere exactamente 3 cursos universitários, em ordem de aderência ao perfil (o primeiro é o mais alinhado).",
+    "Para cada curso, classifica-o com um 'perfil': 'seguro' (encaixe directo e óbvio), 'alinhado' (bom encaixe, menos óbvio) ou 'ousado' (fora da zona de conforto mas com potencial real dado o perfil).",
+    "Sempre que fizer sentido, refere universidades moçambicanas reais onde o curso existe (ex: UEM, UP, ISCTEM, A Politécnica, ISUTC, UCM).",
+    "O campo 'porque' deve ligar explicitamente as disciplinas/interesses do estudante ao curso — nada de justificação genérica que sirva para qualquer estudante.",
+    "O campo 'saidas' deve indicar 1-2 saídas profissionais concretas e realistas no contexto moçambicano.",
+    "",
     "Responde APENAS com JSON válido, sem texto à volta, no formato:",
-    `{"sugestoes": [{"curso": "...", "porque": "..."}]}`,
-    "O campo \"porque\" tem no máximo 2 frases curtas, directas, em português de Moçambique.",
+    `{"sugestoes": [{"curso": "...", "perfil": "seguro|alinhado|ousado", "porque": "...", "universidades": ["..."], "saidas": ["..."]}]}`,
+    "Português de Moçambique, directo, sem floreios.",
   ].filter(Boolean).join(" ");
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const timeoutId = setTimeout(() => controller.abort(), 18000);
 
   try {
     const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
@@ -61,8 +69,8 @@ async function sugerirComIA(disciplinasFortes, interesses, estilo, apiKey) {
       body: JSON.stringify({
         model: MODELO,
         messages: [{ role: "user", content: instrucao }],
-        reasoning_effort: "low",
-        max_tokens: 500,
+        reasoning_effort: "medium",
+        max_tokens: 900,
         response_format: { type: "json_object" },
       }),
       signal: controller.signal,

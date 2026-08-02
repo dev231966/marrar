@@ -33,3 +33,5 @@ marrar.db-*
 .vercel
 .env
 .env*
+test-auth.mjs
+PLANO.md
