@@ -77,6 +77,10 @@ export default function Exercicios() {
   const [exerciciosFeitos, setExerciciosFeitos] = useState([]);
   const [carregandoFeitos, setCarregandoFeitos] = useState(true);
 
+  // ---------- recomendado: um toque, sem escrever nada ----------
+  const [recomendado, setRecomendado] = useState(null);
+  const [carregandoRecomendado, setCarregandoRecomendado] = useState(true);
+
   const acertos = respostas.filter((r) => r.acertou).length;
   const terminou = perguntas.length > 0 && passo >= perguntas.length;
 
@@ -93,7 +97,21 @@ export default function Exercicios() {
     }
   }, [token]);
 
+  const carregarRecomendado = useCallback(async () => {
+    setCarregandoRecomendado(true);
+    try {
+      const resp = await authFetch(token, "/api/recomendado");
+      const dados = await resp.json().catch(() => null);
+      if (resp.ok) setRecomendado(dados?.recomendado || null);
+    } catch {
+      // recomendação é um bónus — falha aqui não deve travar a página
+    } finally {
+      setCarregandoRecomendado(false);
+    }
+  }, [token]);
+
   useEffect(() => { carregarExerciciosFeitos(); }, [carregarExerciciosFeitos]);
+  useEffect(() => { carregarRecomendado(); }, [carregarRecomendado]);
 
   useEffect(() => {
     if (state?.context?.busca) pesquisar(state.context.busca);
@@ -234,6 +252,7 @@ export default function Exercicios() {
           return r;
         });
         carregarExerciciosFeitos(); // ronda nova entra na grade
+        carregarRecomendado(); // a taxa de acerto pode ter mudado o alvo
       }
       return proximo;
     });
@@ -330,6 +349,16 @@ export default function Exercicios() {
 
             {erro && <p className="exe-erro">{erro}</p>}
 
+            {!carregandoRecomendado && recomendado && (
+              <button className="exe-recomendado" onClick={() => pesquisar(recomendado.tema)}>
+                <span className="exe-recomendado-label">Recomendado para ti</span>
+                <span className="exe-recomendado-tema">{recomendado.tema}</span>
+                <span className="exe-recomendado-motivo">
+                  {Math.round((recomendado.acertos / recomendado.total) * 100)}% de acerto até agora — vale a pena reforçar
+                </span>
+              </button>
+            )}
+
             <div className="exe-feitos">
               <div className="exe-feitos-topo">
                 <span className="exe-feitos-label">
@@ -350,7 +379,7 @@ export default function Exercicios() {
                 </div>
               ) : exerciciosFeitos.length > 0 ? (
                 <div className="exe-feitos-grid">
-                  {exerciciosFeitos.map((item) => {
+                  {exerciciosFeitos.filter((item) => item.tema !== recomendado?.tema).map((item) => {
                     const pct = item.total > 0 ? Math.round((item.acertos / item.total) * 100) : 0;
                     return (
                       <button
@@ -358,7 +387,6 @@ export default function Exercicios() {
                         className="exe-feito-card"
                         onClick={() => irParaExplicacao(item)}
                       >
-                        <span className="exe-feito-tag">{item.materiaId}</span>
                         <span className="exe-feito-tema">{item.tema}</span>
                         <span className="exe-feito-stats">{item.acertos}/{item.total} · {pct}% · {formatarData(item.ultima)}</span>
                         <span
