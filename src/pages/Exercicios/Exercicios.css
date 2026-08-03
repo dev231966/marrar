@@ -151,6 +151,11 @@
 }
 .exe-opcao .texto { flex: 1; }
 .exe-opcao svg { width: 18px; height: 18px; flex-shrink: 0; }
+
+/* Escolhida, mas ainda não confirmada — neutro, não revela certo/errado */
+.exe-opcao.selecionada { border-color: var(--accent); background: var(--surface); }
+.exe-opcao.selecionada .letra { background: var(--accent); color: #fff; }
+
 .exe-opcao.correta { border-color: var(--green); background: var(--green-tint); color: #147A44; }
 .exe-opcao.correta .letra { background: var(--green); color: #fff; }
 .exe-opcao.errada { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-hover); }

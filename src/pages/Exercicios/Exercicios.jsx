@@ -46,6 +46,7 @@ export default function Exercicios() {
   const [perguntas, setPerguntas] = useState([]);
   const [passo, setPasso] = useState(0);
   const [selecionada, setSelecionada] = useState(null);
+  const [confirmada, setConfirmada] = useState(false);
   const [respostas, setRespostas] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
@@ -83,6 +84,7 @@ export default function Exercicios() {
     setTemaActivo(alvo);
     setPasso(0);
     setSelecionada(null);
+    setConfirmada(false);
     setRespostas([]);
 
     try {
@@ -102,7 +104,9 @@ export default function Exercicios() {
   }
 
   async function confirmar() {
-    if (selecionada === null) return;
+    if (selecionada === null || confirmada) return;
+    setConfirmada(true); // só agora revela cores + explicação
+
     const exercicio = perguntas[passo];
     const acertou = selecionada === exercicio.correta;
     setRespostas((r) => [...r, { acertou }]);
@@ -121,11 +125,10 @@ export default function Exercicios() {
           respostaDada: selecionada,
           correta: exercicio.correta,
           explicacao: exercicio.explicacao,
+          dificuldade: exercicio.dificuldade,
         }),
       });
       const dados = await resp.json().catch(() => null);
-      // O backend devolve gravado:false (sem sessão ou erro interno) sem
-      // quebrar o quiz — só actualizamos os pontos quando há dados reais.
       if (resp.ok && dados?.gravado) {
         setPontosAnimados(dados.pontosGanhos);
         setProgresso((p) => ({
@@ -143,6 +146,7 @@ export default function Exercicios() {
 
   function seguinte() {
     setSelecionada(null);
+    setConfirmada(false);
     setPasso((p) => {
       const proximo = p + 1;
       if (proximo >= perguntas.length) setEcra("resultado");
@@ -155,6 +159,8 @@ export default function Exercicios() {
     setTemaActivo(null);
     setPerguntas([]);
     setPasso(0);
+    setSelecionada(null);
+    setConfirmada(false);
     setRespostas([]);
     setEcra("entrada");
   }
@@ -313,16 +319,22 @@ export default function Exercicios() {
 
             <div className="exe-opcoes">
               {perguntas[passo].opcoes.map((op, i) => {
-                const respondida = selecionada !== null;
                 const isCorreta = i === perguntas[passo].correta;
                 const isEscolhida = i === selecionada;
                 let estado = "";
-                if (respondida) {
+                if (confirmada) {
                   if (isCorreta) estado = "correta";
                   else if (isEscolhida) estado = "errada";
+                } else if (isEscolhida) {
+                  estado = "selecionada";
                 }
                 return (
-                  <button key={i} className={`exe-opcao ${estado}`} disabled={respondida} onClick={() => setSelecionada(i)}>
+                  <button
+                    key={i}
+                    className={`exe-opcao ${estado}`}
+                    disabled={confirmada}
+                    onClick={() => setSelecionada(i)}
+                  >
                     <span className="letra">{String.fromCharCode(65 + i)}</span>
                     <span className="texto">{renderComFormula(op)}</span>
                   </button>
@@ -330,14 +342,14 @@ export default function Exercicios() {
               })}
             </div>
 
-            {selecionada !== null && (
+            {confirmada && (
               <div className="exe-feedback"><p>{renderComFormula(perguntas[passo].explicacao)}</p></div>
             )}
 
             <div className="exe-actions">
               {selecionada === null ? (
                 <button className="btn-primary large" disabled>Escolhe uma opção</button>
-              ) : respostas.length === passo ? (
+              ) : !confirmada ? (
                 <button className="btn-primary large" onClick={confirmar}>Confirmar resposta</button>
               ) : (
                 <button className="btn-primary large" onClick={seguinte}>
