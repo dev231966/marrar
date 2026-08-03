@@ -100,7 +100,7 @@ export default function Exercicios() {
   const carregarRecomendado = useCallback(async () => {
     setCarregandoRecomendado(true);
     try {
-      const resp = await authFetch(token, "/api/recomendado");
+      const resp = await authFetch(token, "/api/resumo?tipo=recomendado");
       const dados = await resp.json().catch(() => null);
       if (resp.ok) setRecomendado(dados?.recomendado || null);
     } catch {
@@ -278,7 +278,7 @@ export default function Exercicios() {
 
   async function carregarMaisAtividade(cursor = cursorAtividade) {
     try {
-      const resp = await authFetch(token, `/api/progresso?cursor=${cursor}&limite=15`);
+      const resp = await authFetch(token, `/api/resumo?tipo=progresso&cursor=${cursor}&limite=15`);
       const dados = await resp.json().catch(() => null);
       if (!resp.ok) throw new Error(dados?.erro);
       setAtividade((a) => (cursor === 0 ? dados.atividade : [...a, ...dados.atividade]));

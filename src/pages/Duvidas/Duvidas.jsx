@@ -26,7 +26,7 @@ export default function Duvidas() {
     if (!token || context?.aulaTitulo) return; // com contexto de aula, começa sempre uma conversa nova e focada
     let cancelado = false;
 
-    authFetch(token, "/api/historico")
+    authFetch(token, "/api/resumo?tipo=historico")
       .then((r) => (r.ok ? r.json() : { mensagens: [] }))
       .then((dados) => {
         if (cancelado) return;

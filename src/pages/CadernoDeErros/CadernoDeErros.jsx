@@ -37,7 +37,7 @@ export default function CadernoDeErros() {
 
   useEffect(() => {
     let cancelado = false;
-    authFetch(token, "/api/erros")
+    authFetch(token, "/api/resumo?tipo=erros")
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("falhou"))))
       .then((dados) => {
         if (cancelado) return;
