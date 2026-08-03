@@ -1,0 +1,44 @@
+.peb-page {
+  --bg: #FAFAF8; --surface: #FFFFFF; --ink: #1C1B1A; --ink-soft: #6E6A66;
+  --border: #E9E6E2; --accent: #D6342C; --accent-hover: #B82922; --radius: 18px;
+  background: var(--bg); min-height: 100vh; color: var(--ink); font-family: 'Inter', sans-serif;
+}
+.peb-page main.page { max-width: 640px; margin: 0 auto; padding: 24px 16px 70px; }
+.peb-page h1 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 20px; }
+.peb-page .section-lbl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--ink-soft); margin: 22px 0 10px; }
+
+.peb-aviso { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; font-size: 14px; color: var(--ink-soft); text-align: center; }
+.peb-aviso.erro { color: var(--accent); }
+
+/* wizard */
+.peb-wizard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 22px; }
+.peb-progresso { display: flex; gap: 6px; margin-bottom: 18px; }
+.peb-progresso span { flex: 1; height: 4px; border-radius: 100px; background: var(--border); }
+.peb-progresso span.on { background: var(--accent); }
+.peb-wizard h2 { font-family: 'Plus Jakarta Sans', sans-serif; font-size: 17px; font-weight: 700; margin-bottom: 16px; }
+.peb-pergunta { margin-bottom: 20px; }
+.peb-pergunta label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+.peb-input { width: 100%; border: 1.5px solid var(--border); border-radius: 12px; padding: 12px 14px; font-size: 14.5px; font-family: inherit; }
+.peb-input:focus { outline: none; border-color: var(--accent); }
+.peb-opcoes { display: flex; flex-wrap: wrap; gap: 8px; }
+.peb-opcao { border: 1.5px solid var(--border); background: var(--surface); border-radius: 100px; padding: 9px 15px; font-size: 13px; font-weight: 600; color: var(--ink); cursor: pointer; }
+.peb-opcao.pequena { padding: 6px 12px; font-size: 12px; }
+.peb-opcao.activa { background: var(--accent); border-color: var(--accent); color: #fff; }
+.peb-nivel-grupo { margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
+.peb-nivel-lbl { display: block; font-size: 12.5px; color: var(--ink-soft); margin-bottom: 10px; }
+.peb-nivel-linha { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; font-size: 13.5px; font-weight: 600; }
+.peb-nav { display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px; }
+.peb-btn { border: none; border-radius: 100px; padding: 12px 22px; font-size: 14px; font-weight: 700; cursor: pointer; }
+.peb-btn.primario { background: var(--accent); color: #fff; }
+.peb-btn.primario:hover { background: var(--accent-hover); }
+.peb-btn.primario:disabled { background: var(--border); color: var(--ink-soft); cursor: not-allowed; }
+.peb-btn.secundario { background: none; color: var(--ink-soft); }
+
+/* plano */
+.peb-resumo { font-size: 14.5px; line-height: 1.6; color: #3A3835; }
+.peb-tabela { display: flex; flex-direction: column; gap: 8px; }
+.peb-tema-linha { display: flex; gap: 12px; align-items: flex-start; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 14px 16px; }
+.peb-prioridade { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.peb-tema-linha .t { font-size: 14px; font-weight: 700; }
+.peb-tema-linha .s { font-size: 12.5px; color: var(--ink-soft); margin-top: 2px; }
+.peb-instrucoes { padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14px; color: #3A3835; }

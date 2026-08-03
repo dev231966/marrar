@@ -181,3 +181,16 @@ INSERT INTO conquistas (chave, nome, descricao, icone) VALUES
   ('perfeccionista',   'Perfeccionista',        'Acertaste tudo numa ronda de exercícios',            '🎯'),
   ('mestre_tema',      'Mestre do Tema',        'Domina um tema (80%+ de acerto, mín. 15 respostas)', '📚')
 ON CONFLICT (chave) DO NOTHING;
+
+-- Plano de estudo personalizado (wizard de perfil do aluno)
+CREATE TABLE IF NOT EXISTS perfil_estudo_resultados (
+  id             SERIAL PRIMARY KEY,
+  user_id        INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  respostas_json TEXT NOT NULL,
+  plano_json     TEXT,
+  estado         TEXT NOT NULL DEFAULT 'a_processar'
+                 CHECK (estado IN ('a_processar', 'pronto', 'falhou')),
+  criado_em      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_perfil_estudo_user ON perfil_estudo_resultados(user_id, criado_em);
