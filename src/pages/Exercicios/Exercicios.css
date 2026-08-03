@@ -49,24 +49,9 @@
 }
 @keyframes exe-spin { to { transform: rotate(360deg); } }
 
-/* ---------- barra de stats ---------- */
-.exe-stats {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  padding: 12px 16px;
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  margin-bottom: 20px;
-  background: var(--surface);
-}
-.exe-stat { display: flex; flex-direction: column; }
-.exe-stat .valor { font-size: 15px; font-weight: 800; }
-.exe-stat .label { font-size: 10.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .03em; }
-.exe-stat-link { margin-left: auto; background: none; border: none; color: var(--accent); font-size: 12.5px; font-weight: 700; cursor: pointer; }
-
-/* ---------- pesquisa ---------- */
-.exe-busca { display: flex; gap: 10px; margin-bottom: 20px; }
+/* ---------- pesquisa + autocomplete ---------- */
+.exe-busca-wrap { position: relative; margin-bottom: 20px; }
+.exe-busca { display: flex; gap: 10px; }
 .exe-busca input {
   flex: 1;
   border: 1.5px solid var(--border);
@@ -79,12 +64,112 @@
 .exe-busca input:focus { border-color: var(--accent); }
 .exe-busca .btn-primary { border-radius: 100px; padding: 0 22px; }
 
+.exe-autocomplete {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-md);
+  max-height: 260px;
+  overflow-y: auto;
+  padding: 6px;
+}
+.exe-autocomplete-item {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--ink);
+  cursor: pointer;
+}
+.exe-autocomplete-item:hover { background: var(--bg-soft); }
+.exe-autocomplete-msg {
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
 .exe-erro { color: var(--accent); font-size: 13.5px; margin-bottom: 16px; }
 
-/* ---------- sugestões — compacto, scroll horizontal ---------- */
-.exe-sugestoes { margin-top: 8px; }
-.exe-sugestoes-label { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .03em; }
-.exe-sugestoes-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
+/* ---------- exercícios feitos (grade principal) ---------- */
+.exe-feitos { margin-top: 8px; }
+.exe-feitos-topo { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.exe-feitos-label { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .03em; }
+.exe-stat-link { background: none; border: none; color: var(--accent); font-size: 12.5px; font-weight: 700; cursor: pointer; }
+
+.exe-feitos-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.exe-feito-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  padding: 14px 14px 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  box-shadow: var(--shadow-sm);
+  transition: border-color .15s ease, transform .1s ease;
+}
+.exe-feito-card:hover { border-color: var(--accent); }
+.exe-feito-card:active { transform: scale(0.98); }
+
+.exe-feito-tema {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.3;
+}
+.exe-feito-stats { font-size: 12px; color: var(--ink-soft); }
+.exe-feito-praticar {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+/* ---------- skeleton (carregamento da grade) ---------- */
+.exe-skeleton-card {
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.sk-linha {
+  border-radius: 6px;
+  background: linear-gradient(90deg, var(--bg-soft) 25%, #EDE9E3 37%, var(--bg-soft) 63%);
+  background-size: 400% 100%;
+  animation: exe-shimmer 1.4s ease infinite;
+}
+.sk-tag { width: 46px; height: 14px; border-radius: 100px; }
+.sk-titulo { width: 80%; height: 16px; }
+.sk-sub { width: 60%; height: 12px; }
+@keyframes exe-shimmer {
+  0% { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+/* ---------- sugestões — fallback para conta nova, scroll horizontal ---------- */
+.exe-sugestoes-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 4px 0; scrollbar-width: none; }
 .exe-sugestoes-scroll::-webkit-scrollbar { display: none; }
 .exe-sugestao-chip {
   flex-shrink: 0;

@@ -1,5 +1,5 @@
-import { useEffect, useState, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect, useState, useCallback, useRef } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/layout/DashboardHeader";
 import Mathmarrar from "../../components/Mathmarrar";
 import { useAuth, authFetch } from "../../context/AuthContext";
@@ -29,19 +29,26 @@ function renderComFormula(texto) {
   });
 }
 
-// Sugestões compactas — não é a lista inteira de matérias, é um atalho rápido.
-const SUGESTOES_RAPIDAS = ["Trigonometria", "Leis de Newton", "Tabela periódica", "Verbos irregulares"];
+// Fallback só para quem ainda não tem nenhum exercício feito (conta nova) —
+// assim que houver histórico, a grade de "exercícios feitos" toma o lugar disto.
+const SUGESTOES_INICIAIS = ["Trigonometria", "Leis de Newton", "Tabela periódica", "Verbos irregulares"];
+
+function formatarData(iso) {
+  try {
+    return new Date(iso).toLocaleDateString("pt-MZ", { day: "2-digit", month: "short" });
+  } catch {
+    return "";
+  }
+}
 
 export default function Exercicios() {
   const { state } = useLocation();
+  const navigate = useNavigate();
   const { token } = useAuth();
 
   const [ecra, setEcra] = useState("entrada"); // entrada | quiz | resultado | historico
   const [busca, setBusca] = useState(state?.context?.busca || "");
   const [temaActivo, setTemaActivo] = useState(null);
-
-  const [progresso, setProgresso] = useState(null);
-  const [pontosAnimados, setPontosAnimados] = useState(null);
 
   const [perguntas, setPerguntas] = useState([]);
   const [passo, setPasso] = useState(0);
@@ -50,6 +57,7 @@ export default function Exercicios() {
   const [respostas, setRespostas] = useState([]);
   const [carregando, setCarregando] = useState(false);
   const [erro, setErro] = useState(null);
+  const [pontosAnimados, setPontosAnimados] = useState(null);
 
   const [atividade, setAtividade] = useState([]);
   const [cursorAtividade, setCursorAtividade] = useState(0);
@@ -58,30 +66,83 @@ export default function Exercicios() {
   // Conquistas desbloqueadas nesta ronda (ex: "perfeccionista"), mostradas no ecrã de resultado.
   const [conquistasNovas, setConquistasNovas] = useState([]);
 
+  // ---------- autocomplete ----------
+  const [sugestoes, setSugestoes] = useState([]);
+  const [sugestoesAbertas, setSugestoesAbertas] = useState(false);
+  const [sugestoesCarregando, setSugestoesCarregando] = useState(false);
+  const buscaWrapRef = useRef(null);
+  const debounceRef = useRef(null);
+
+  // ---------- exercícios feitos (grade da tela principal) ----------
+  const [exerciciosFeitos, setExerciciosFeitos] = useState([]);
+  const [carregandoFeitos, setCarregandoFeitos] = useState(true);
+
   const acertos = respostas.filter((r) => r.acertou).length;
   const terminou = perguntas.length > 0 && passo >= perguntas.length;
 
-  const carregarProgresso = useCallback(async () => {
+  const carregarExerciciosFeitos = useCallback(async () => {
+    setCarregandoFeitos(true);
     try {
-      const resp = await authFetch(token, "/api/progresso?limite=1");
+      const resp = await authFetch(token, "/api/exercicios-feitos?limite=8");
       const dados = await resp.json().catch(() => null);
-      if (resp.ok) setProgresso(dados);
+      if (resp.ok) setExerciciosFeitos(dados?.exercicios || []);
     } catch {
-      // silencioso: stats não bloqueiam o uso da página
+      // grade é secundária — falha aqui não deve travar a página
+    } finally {
+      setCarregandoFeitos(false);
     }
   }, [token]);
 
-  useEffect(() => { carregarProgresso(); }, [carregarProgresso]);
+  useEffect(() => { carregarExerciciosFeitos(); }, [carregarExerciciosFeitos]);
 
   useEffect(() => {
     if (state?.context?.busca) pesquisar(state.context.busca);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Fecha o dropdown de sugestões ao clicar fora dele.
+  useEffect(() => {
+    function aoClicarFora(e) {
+      if (buscaWrapRef.current && !buscaWrapRef.current.contains(e.target)) {
+        setSugestoesAbertas(false);
+      }
+    }
+    document.addEventListener("mousedown", aoClicarFora);
+    return () => document.removeEventListener("mousedown", aoClicarFora);
+  }, []);
+
+  // Autocomplete ao vivo: pesquisa no banco (não é lista fixa) com debounce.
+  function aoMudarBusca(valor) {
+    setBusca(valor);
+    setSugestoesAbertas(true);
+    clearTimeout(debounceRef.current);
+
+    const termo = valor.trim();
+    if (termo.length < 2) {
+      setSugestoes([]);
+      setSugestoesCarregando(false);
+      return;
+    }
+
+    setSugestoesCarregando(true);
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const resp = await authFetch(token, `/api/temas-sugeridos?q=${encodeURIComponent(termo)}&limite=8`);
+        const dados = await resp.json().catch(() => null);
+        if (resp.ok) setSugestoes(dados?.sugestoes || []);
+      } catch {
+        // autocomplete é um bónus — falha aqui não deve travar a pesquisa
+      } finally {
+        setSugestoesCarregando(false);
+      }
+    }, 300);
+  }
+
   async function pesquisar(termo) {
     const alvo = (termo ?? busca).trim();
     if (!alvo) return;
 
+    setSugestoesAbertas(false);
     setCarregando(true);
     setErro(null);
     setTemaActivo(alvo);
@@ -135,12 +196,6 @@ export default function Exercicios() {
       const dados = await resp.json().catch(() => null);
       if (resp.ok && dados?.gravado) {
         setPontosAnimados(dados.pontosGanhos);
-        setProgresso((p) => ({
-          ...(p || {}),
-          pontos: dados.pontosTotais,
-          nivel: dados.nivel,
-          sequenciaDias: dados.sequenciaDias,
-        }));
         setTimeout(() => setPontosAnimados(null), 1200);
       }
     } catch {
@@ -173,12 +228,12 @@ export default function Exercicios() {
       const proximo = p + 1;
       if (proximo >= perguntas.length) {
         setEcra("resultado");
-        // usar respostas + a resposta atual (ainda não reflectida em `acertos` neste tick)
         setRespostas((r) => {
           const acertosFinal = r.filter((x) => x.acertou).length;
           verificarConquistasDaRonda(acertosFinal, perguntas.length);
           return r;
         });
+        carregarExerciciosFeitos(); // ronda nova entra na grade
       }
       return proximo;
     });
@@ -193,6 +248,7 @@ export default function Exercicios() {
     setConfirmada(false);
     setRespostas([]);
     setConquistasNovas([]);
+    setSugestoes([]);
     setEcra("entrada");
   }
 
@@ -214,31 +270,19 @@ export default function Exercicios() {
     }
   }
 
+  // Abre a rota de Explicação para estudar/fundamentar um tema. A rota já
+  // existe no router — ainda não tem o ecrã construído, só está a receber
+  // o contexto para quando for implementada.
+  function irParaExplicacao(item) {
+    navigate("/explicacao", { state: { context: { tema: item.tema, materiaId: item.materiaId } } });
+  }
+
   return (
     <div className="exe-page">
       <DashboardHeader />
 
       <main className="page">
-        {/* ---------- Barra de stats, sempre visível excepto durante o quiz ---------- */}
-        {ecra !== "quiz" && progresso && (
-          <div className="exe-stats">
-            <div className="exe-stat">
-              <span className="valor">{progresso.pontos ?? 0}</span>
-              <span className="label">pontos</span>
-            </div>
-            <div className="exe-stat">
-              <span className="valor">Nv {progresso.nivel ?? 1}</span>
-              <span className="label">nível</span>
-            </div>
-            <div className="exe-stat">
-              <span className="valor">🔥 {progresso.sequenciaDias ?? 0}</span>
-              <span className="label">dias seguidos</span>
-            </div>
-            <button className="exe-stat-link" onClick={abrirHistorico}>Ver histórico</button>
-          </div>
-        )}
-
-        {/* ---------- Entrada: pesquisa, não grid de matérias ---------- */}
+        {/* ---------- Entrada: pesquisa + grade de exercícios feitos ---------- */}
         {ecra === "entrada" && (
           <>
             <div className="exe-intro">
@@ -246,28 +290,96 @@ export default function Exercicios() {
               <p>Escreva o tema ex:"historia de moçambique"</p>
             </div>
 
-            <form className="exe-busca" onSubmit={(e) => { e.preventDefault(); pesquisar(); }}>
-              <input
-                type="text"
-                value={busca}
-                onChange={(e) => setBusca(e.target.value)}
-                placeholder="Pesquisar tema…"
-                autoFocus
-              />
-              <button type="submit" className="btn-primary" disabled={!busca.trim() || carregando}>
-                {carregando ? "…" : "Praticar"}
-              </button>
-            </form>
+            <div className="exe-busca-wrap" ref={buscaWrapRef}>
+              <form
+                className="exe-busca"
+                onSubmit={(e) => { e.preventDefault(); pesquisar(); }}
+                autoComplete="off"
+              >
+                <input
+                  type="text"
+                  value={busca}
+                  onChange={(e) => aoMudarBusca(e.target.value)}
+                  onFocus={() => setSugestoesAbertas(true)}
+                  placeholder="Pesquisar tema…"
+                  autoFocus
+                />
+                <button type="submit" className="btn-primary" disabled={!busca.trim() || carregando}>
+                  {carregando ? "…" : "Praticar"}
+                </button>
+              </form>
+
+              {sugestoesAbertas && busca.trim().length >= 2 && (
+                <div className="exe-autocomplete">
+                  {sugestoesCarregando ? (
+                    <div className="exe-autocomplete-msg">A procurar…</div>
+                  ) : sugestoes.length > 0 ? (
+                    sugestoes.map((s) => (
+                      <button key={s} className="exe-autocomplete-item" onClick={() => pesquisar(s)}>
+                        {s}
+                      </button>
+                    ))
+                  ) : (
+                    <div className="exe-autocomplete-msg">
+                      Sem sugestões — carrega em "Praticar" para pesquisar mesmo assim.
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {erro && <p className="exe-erro">{erro}</p>}
 
-            <div className="exe-sugestoes">
-              <span className="exe-sugestoes-label">Sugestões rápidas</span>
-              <div className="exe-sugestoes-scroll">
-                {SUGESTOES_RAPIDAS.map((s) => (
-                  <button key={s} className="exe-sugestao-chip" onClick={() => pesquisar(s)}>{s}</button>
-                ))}
+            <div className="exe-feitos">
+              <div className="exe-feitos-topo">
+                <span className="exe-feitos-label">
+                  {carregandoFeitos || exerciciosFeitos.length > 0 ? "Exercícios feitos" : "Sugestões para começar"}
+                </span>
+                <button className="exe-stat-link" onClick={abrirHistorico}>Ver histórico</button>
               </div>
+
+              {carregandoFeitos ? (
+                <div className="exe-feitos-grid">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="exe-skeleton-card">
+                      <div className="sk-linha sk-tag" />
+                      <div className="sk-linha sk-titulo" />
+                      <div className="sk-linha sk-sub" />
+                    </div>
+                  ))}
+                </div>
+              ) : exerciciosFeitos.length > 0 ? (
+                <div className="exe-feitos-grid">
+                  {exerciciosFeitos.map((item) => {
+                    const pct = item.total > 0 ? Math.round((item.acertos / item.total) * 100) : 0;
+                    return (
+                      <button
+                        key={`${item.materiaId}-${item.tema}`}
+                        className="exe-feito-card"
+                        onClick={() => irParaExplicacao(item)}
+                      >
+                        <span className="exe-feito-tag">{item.materiaId}</span>
+                        <span className="exe-feito-tema">{item.tema}</span>
+                        <span className="exe-feito-stats">{item.acertos}/{item.total} · {pct}% · {formatarData(item.ultima)}</span>
+                        <span
+                          className="exe-feito-praticar"
+                          role="button"
+                          tabIndex={0}
+                          onClick={(e) => { e.stopPropagation(); pesquisar(item.tema); }}
+                        >
+                          Praticar de novo
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="exe-sugestoes-scroll">
+                  {SUGESTOES_INICIAIS.map((s) => (
+                    <button key={s} className="exe-sugestao-chip" onClick={() => pesquisar(s)}>{s}</button>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         )}
