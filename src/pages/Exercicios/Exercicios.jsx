@@ -55,6 +55,9 @@ export default function Exercicios() {
   const [cursorAtividade, setCursorAtividade] = useState(0);
   const [temMaisAtividade, setTemMaisAtividade] = useState(false);
 
+  // Conquistas desbloqueadas nesta ronda (ex: "perfeccionista"), mostradas no ecrã de resultado.
+  const [conquistasNovas, setConquistasNovas] = useState([]);
+
   const acertos = respostas.filter((r) => r.acertou).length;
   const terminou = perguntas.length > 0 && passo >= perguntas.length;
 
@@ -86,6 +89,7 @@ export default function Exercicios() {
     setSelecionada(null);
     setConfirmada(false);
     setRespostas([]);
+    setConquistasNovas([]);
 
     try {
       const params = new URLSearchParams({ busca: alvo, limite: "5" });
@@ -144,12 +148,38 @@ export default function Exercicios() {
     }
   }
 
+  // Verifica conquistas que só fazem sentido ao nível da ronda inteira
+  // (ex: perfeccionista). Chamado uma vez, quando a última pergunta é respondida.
+  async function verificarConquistasDaRonda(acertosFinal, totalFinal) {
+    try {
+      const resp = await authFetch(token, "/api/conquistas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ evento: "ronda_concluida", acertos: acertosFinal, total: totalFinal }),
+      });
+      const dados = await resp.json().catch(() => null);
+      if (resp.ok && Array.isArray(dados?.novas) && dados.novas.length > 0) {
+        setConquistasNovas(dados.novas);
+      }
+    } catch {
+      // conquistas são um bónus — falha aqui não deve travar o resultado
+    }
+  }
+
   function seguinte() {
     setSelecionada(null);
     setConfirmada(false);
     setPasso((p) => {
       const proximo = p + 1;
-      if (proximo >= perguntas.length) setEcra("resultado");
+      if (proximo >= perguntas.length) {
+        setEcra("resultado");
+        // usar respostas + a resposta atual (ainda não reflectida em `acertos` neste tick)
+        setRespostas((r) => {
+          const acertosFinal = r.filter((x) => x.acertou).length;
+          verificarConquistasDaRonda(acertosFinal, perguntas.length);
+          return r;
+        });
+      }
       return proximo;
     });
   }
@@ -162,6 +192,7 @@ export default function Exercicios() {
     setSelecionada(null);
     setConfirmada(false);
     setRespostas([]);
+    setConquistasNovas([]);
     setEcra("entrada");
   }
 
@@ -292,6 +323,21 @@ export default function Exercicios() {
 
             <h1>{acertos === perguntas.length ? "Perfeito! 🎯" : acertos / perguntas.length >= 0.5 ? "Bom trabalho!" : "Continua a praticar"}</h1>
             <p>Acertaste {acertos} de {perguntas.length} sobre <b>{temaActivo}</b>. Os erros ficam no teu Caderno de Erros.</p>
+
+            {conquistasNovas.length > 0 && (
+              <div className="exe-conquistas-novas">
+                <span className="exe-conquistas-label">Conquista desbloqueada</span>
+                {conquistasNovas.map((c) => (
+                  <div key={c.chave} className="exe-conquista-card">
+                    <span className="icone">{c.icone}</span>
+                    <div className="info">
+                      <span className="nome">{c.nome}</span>
+                      <span className="descricao">{c.descricao}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className="exe-result-actions">
               <button className="btn-primary" onClick={() => pesquisar(temaActivo)}>Praticar mais deste tema</button>

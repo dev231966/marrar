@@ -10,6 +10,7 @@
 //      atualiza pontos/nível/sequência de dias.
 
 import { autenticar, ensureSchema, getDb } from "./_db.js";
+import { tentarAtribuir } from "./conquistas.js";
 
 const MODELO = "openai/gpt-oss-120b";
 const PONTOS_POR_DIFICULDADE = { facil: 10, medio: 20, dificil: 35 };
@@ -226,6 +227,42 @@ async function atualizarProgresso(db, userId, acertou, dificuldade) {
   return { pontosGanhos, pontosTotais: pontos, nivel, sequenciaDias };
 }
 
+// Verifica conquistas que dependem do estado de progresso já calculado
+// (nível, sequência, primeira vez) e de mestria num tema específico.
+// Devolve só as que foram desbloqueadas agora mesmo, com os dados para a UI
+// mostrar uma celebração.
+async function verificarConquistas(db, userId, progresso, materiaChave) {
+  const novas = [];
+
+  async function tentar(chave, detalhe = "") {
+    const atribuida = await tentarAtribuir(db, userId, chave, detalhe);
+    if (atribuida) {
+      const c = await db.execute({ sql: "SELECT * FROM conquistas WHERE chave = ?", args: [chave] });
+      if (c.rows[0]) novas.push(c.rows[0]);
+    }
+  }
+
+  if (progresso.exerciciosFeitos === 1) await tentar("primeira_vitoria");
+  if (progresso.nivel >= 5) await tentar("nivel_5");
+  if (progresso.nivel >= 10) await tentar("nivel_10");
+  if (progresso.sequenciaDias >= 7) await tentar("sequencia_7");
+  if (progresso.sequenciaDias >= 30) await tentar("sequencia_30");
+
+  // Mestria de tema: 80%+ de acerto com pelo menos 15 respostas naquele tema.
+  const stats = await db.execute({
+    sql: `SELECT COUNT(*) as total, SUM(CASE WHEN r.acertou THEN 1 ELSE 0 END) as certos
+          FROM exercicios_respostas r JOIN exercicios_banco b ON b.id = r.exercicio_id
+          WHERE r.user_id = ? AND b.materia_id = ?`,
+    args: [userId, materiaChave],
+  });
+  const { total, certos } = stats.rows[0] || {};
+  if (Number(total) >= 15 && Number(certos) / Number(total) >= 0.8) {
+    await tentar("mestre_tema", materiaChave);
+  }
+
+  return novas;
+}
+
 async function handlePost(req, res) {
   const { exercicioId, materiaId, materiaNome, tema, pergunta, opcoes, respostaDada, correta, explicacao, dificuldade } = req.body || {};
 
@@ -269,8 +306,10 @@ async function handlePost(req, res) {
     }
 
     const progresso = await atualizarProgresso(db, userId, acertou, dificuldade || "medio");
+    const chaveTema = normalizarChave(materiaId);
+    const conquistasNovas = await verificarConquistas(db, userId, progresso, chaveTema);
 
-    return res.status(200).json({ gravado: true, ...progresso });
+    return res.status(200).json({ gravado: true, ...progresso, conquistasNovas });
   } catch (e) {
     console.error("Erro a registar resposta de exercício:", e.message);
     return res.status(200).json({ gravado: false, motivo: "erro interno" });

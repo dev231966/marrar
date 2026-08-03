@@ -150,3 +150,34 @@ SET
 WHERE pergunta LIKE '%\(%' OR pergunta LIKE '%\[%'
    OR opcoes_json LIKE '%\(%' OR opcoes_json LIKE '%\[%'
    OR explicacao LIKE '%\(%' OR explicacao LIKE '%\[%';
+
+
+-- Acrescentar ao final do schema.sql
+
+CREATE TABLE IF NOT EXISTS conquistas (
+  chave      TEXT PRIMARY KEY,
+  nome       TEXT NOT NULL,
+  descricao  TEXT NOT NULL,
+  icone      TEXT NOT NULL DEFAULT '🏅'
+);
+
+CREATE TABLE IF NOT EXISTS user_conquistas (
+  id               SERIAL PRIMARY KEY,
+  user_id          INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  conquista_chave  TEXT NOT NULL REFERENCES conquistas(chave) ON DELETE CASCADE,
+  detalhe          TEXT NOT NULL DEFAULT '',
+  desbloqueado_em  TIMESTAMPTZ NOT NULL DEFAULT now(),
+  UNIQUE(user_id, conquista_chave, detalhe)
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_conquistas_user ON user_conquistas(user_id);
+
+INSERT INTO conquistas (chave, nome, descricao, icone) VALUES
+  ('primeira_vitoria', 'Primeira Vitória',     'Completaste o teu primeiro exercício',              '🎉'),
+  ('nivel_5',          'Ascensão',              'Chegaste ao Nível 5',                                '⭐'),
+  ('nivel_10',         'Veterano',              'Chegaste ao Nível 10',                               '🏆'),
+  ('sequencia_7',      'Uma Semana Marrando',   '7 dias seguidos de prática',                         '🔥'),
+  ('sequencia_30',     'Inabalável',            '30 dias seguidos de prática',                        '💎'),
+  ('perfeccionista',   'Perfeccionista',        'Acertaste tudo numa ronda de exercícios',            '🎯'),
+  ('mestre_tema',      'Mestre do Tema',        'Domina um tema (80%+ de acerto, mín. 15 respostas)', '📚')
+ON CONFLICT (chave) DO NOTHING;
