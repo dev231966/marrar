@@ -15,6 +15,16 @@ const MODELO = "openai/gpt-oss-120b";
 const PONTOS_POR_DIFICULDADE = { facil: 10, medio: 20, dificil: 35 };
 const PONTOS_POR_NIVEL = 150;
 
+// O Fario às vezes devolve \(...\) ou \[...\] em vez de $...$, mesmo sendo
+// instruído a não o fazer. Normaliza aqui para o banco nunca gravar um
+// formato que o frontend não sabe renderizar.
+function normalizarLatex(texto) {
+  if (!texto) return texto;
+  return String(texto)
+    .replace(/\\\[/g, "$$").replace(/\\\]/g, "$$")
+    .replace(/\\\(/g, "$").replace(/\\\)/g, "$");
+}
+
 // Transforma o texto de pesquisa numa chave estável para agrupar
 // dificuldade/estatísticas (ex.: "Leis de Newton" e "leis de newton" contam
 // como o mesmo tema).
@@ -80,7 +90,13 @@ async function gerarComFario(temaBusca, dificuldade, quantidade) {
 
     return lista
       .filter((e) => e?.pergunta && Array.isArray(e.opcoes) && e.opcoes.length >= 2 && typeof e.correta === "number")
-      .slice(0, quantidade);
+      .slice(0, quantidade)
+      .map((e) => ({
+        ...e,
+        pergunta: normalizarLatex(e.pergunta),
+        opcoes: e.opcoes.map(normalizarLatex),
+        explicacao: normalizarLatex(e.explicacao),
+      }));
   } catch (e) {
     clearTimeout(timeoutId);
     console.error("Falha do Fario a gerar exercícios:", e.message);
@@ -114,8 +130,6 @@ async function handleGet(req, res) {
 
     dificuldadeAlvo = await calcularDificuldadeAlvo(db, userId, chave);
 
-    // Full-text search em português sobre tema + pergunta + matéria —
-    // encontra conteúdo relevante mesmo sem correspondência exacta de texto.
     const resultado = await db.execute({
       sql: `SELECT id, pergunta, opcoes_json, correta, explicacao, origem, dificuldade
             FROM exercicios_banco
@@ -129,8 +143,6 @@ async function handleGet(req, res) {
     console.error("Banco de exercícios indisponível, a seguir sem ele:", e.message);
   }
 
-  // Banco curto sobre este tema/dificuldade: o Fario completa e grava com
-  // id real — nunca devolve um id falso ao frontend.
   if (linhas.length < limite) {
     const gerados = await gerarComFario(busca, dificuldadeAlvo, limite - linhas.length);
     if (gerados.length) {

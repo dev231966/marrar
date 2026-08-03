@@ -136,3 +136,17 @@ CREATE TABLE IF NOT EXISTS user_progresso (
   ultimo_dia_activo  DATE,
   atualizado_em      TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+
+-- Correr UMA VEZ no SQL Editor da Neon (ou psql), para corrigir exercícios
+-- já gravados com \(...\) ou \[...\] em vez de $...$.
+-- Seguro repetir: se já não houver "\(" no texto, o replace não faz nada.
+
+UPDATE exercicios_banco
+SET
+  pergunta = REPLACE(REPLACE(REPLACE(REPLACE(pergunta, '\(', '$'), '\)', '$'), '\[', '$$'), '\]', '$$'),
+  opcoes_json = REPLACE(REPLACE(REPLACE(REPLACE(opcoes_json, '\(', '$'), '\)', '$'), '\[', '$$'), '\]', '$$'),
+  explicacao = REPLACE(REPLACE(REPLACE(REPLACE(explicacao, '\(', '$'), '\)', '$'), '\[', '$$'), '\]', '$$')
+WHERE pergunta LIKE '%\(%' OR pergunta LIKE '%\[%'
+   OR opcoes_json LIKE '%\(%' OR opcoes_json LIKE '%\[%'
+   OR explicacao LIKE '%\(%' OR explicacao LIKE '%\[%';

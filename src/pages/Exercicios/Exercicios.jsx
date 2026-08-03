@@ -6,12 +6,27 @@ import { useAuth, authFetch } from "../../context/AuthContext";
 import "./Exercicios.css";
 
 function renderComFormula(texto) {
-  const partes = String(texto).split(/(\$[^$]+\$)/g);
-  return partes.map((parte, i) =>
-    parte.startsWith("$") && parte.endsWith("$")
-      ? <Mathmarrar key={i} tex={parte.slice(1, -1)} display={false} />
-      : <span key={i}>{parte}</span>
-  );
+  const partes = String(texto).split(/(\$[^$]+\$|\\\([\s\S]*?\\\)|\\\[[\s\S]*?\\\])/g);
+
+  return partes.map((parte, i) => {
+    if (!parte) return null;
+
+    let tex = null;
+    let display = false;
+
+    if (parte.startsWith("$") && parte.endsWith("$")) {
+      tex = parte.slice(1, -1);
+    } else if (parte.startsWith("\\(") && parte.endsWith("\\)")) {
+      tex = parte.slice(2, -2);
+    } else if (parte.startsWith("\\[") && parte.endsWith("\\]")) {
+      tex = parte.slice(2, -2);
+      display = true;
+    }
+
+    return tex !== null
+      ? <Mathmarrar key={i} tex={tex} display={display} />
+      : <span key={i}>{parte}</span>;
+  });
 }
 
 // Sugestões compactas — não é a lista inteira de matérias, é um atalho rápido.
