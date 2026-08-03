@@ -102,3 +102,37 @@ CREATE TABLE IF NOT EXISTS notificacoes (
 );
 
 CREATE INDEX IF NOT EXISTS idx_notificacoes_user ON notificacoes(user_id, criado_em);
+
+
+-- Adições ao schema.sql existente — correr na Neon (SQL Editor ou psql)
+
+-- Exercícios precisam de tema granular e busca eficiente a partir de 10k+ linhas.
+ALTER TABLE exercicios_banco ADD COLUMN IF NOT EXISTS tema TEXT NOT NULL DEFAULT '';
+ALTER TABLE exercicios_banco ADD COLUMN IF NOT EXISTS dificuldade TEXT NOT NULL DEFAULT 'medio'
+  CHECK (dificuldade IN ('facil', 'medio', 'dificil'));
+
+-- Backfill: exercícios antigos sem tema usam a matéria como tema provisório.
+UPDATE exercicios_banco SET tema = materia_id WHERE tema = '';
+
+-- Full-text search em português — essencial para pesquisar "o que o
+-- estudante quer aprender" sem varrer a tabela inteira linha a linha.
+ALTER TABLE exercicios_banco ADD COLUMN IF NOT EXISTS busca_tsv tsvector
+  GENERATED ALWAYS AS (
+    to_tsvector('portuguese', coalesce(tema, '') || ' ' || coalesce(pergunta, '') || ' ' || coalesce(materia_id, ''))
+  ) STORED;
+
+CREATE INDEX IF NOT EXISTS idx_exercicios_busca ON exercicios_banco USING GIN (busca_tsv);
+CREATE INDEX IF NOT EXISTS idx_exercicios_tema ON exercicios_banco(tema);
+
+-- Progresso do estudante: tabela própria, actualizada por incremento
+-- (UPDATE pontos = pontos + X), nunca recalculada a partir do histórico
+-- inteiro. Isto é o que mantém a leitura rápida mesmo com 10k+ respostas.
+CREATE TABLE IF NOT EXISTS user_progresso (
+  user_id            INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  pontos             INTEGER NOT NULL DEFAULT 0,
+  exercicios_feitos  INTEGER NOT NULL DEFAULT 0,
+  exercicios_certos  INTEGER NOT NULL DEFAULT 0,
+  sequencia_dias     INTEGER NOT NULL DEFAULT 0,
+  ultimo_dia_activo  DATE,
+  atualizado_em      TIMESTAMPTZ NOT NULL DEFAULT now()
+);

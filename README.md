@@ -22,7 +22,7 @@ Toda vez que alterares o `schema.sql`, corre:
 
 ```bash
 npx vercel --prod
-curl "https://marrar.vercel.app/api/migrate?secret=marrarmigrate2026chall"
+curl "https://marrar.vercel.app/api/migrate?secret=marra2207"
 ```
 
 (Senha guardada fora do repositório.)

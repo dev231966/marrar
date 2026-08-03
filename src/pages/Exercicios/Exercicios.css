@@ -22,22 +22,11 @@
 .exe-page h1, .exe-page h2 { font-family: 'Plus Jakarta Sans', sans-serif; }
 .exe-page main.page { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
 
-/* ---------- intro + escolha de matéria ---------- */
+/* ---------- intro ---------- */
 .exe-intro h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
 .exe-intro p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 24px; }
 
-.exe-niveis { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-.exe-nivel-chip {
-  padding: 8px 14px;
-  border-radius: 100px;
-  border: 1px solid var(--border, #E9E6E2);
-  background: var(--surface, #fff);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ink-soft, #6E6A66);
-  cursor: pointer;
-}
-.exe-nivel-chip.active { background: var(--accent, #B00020); border-color: var(--accent, #B00020); color: #fff; }
+.exe-hint { font-size: 13.5px; color: var(--ink-soft); text-align: center; padding: 30px 10px; }
 
 .exe-loading {
   display: flex;
@@ -58,29 +47,58 @@
 }
 @keyframes exe-spin { to { transform: rotate(360deg); } }
 
-.exe-materias { display: flex; flex-direction: column; gap: 10px; }
-.exe-materia-card {
+/* ---------- barra de stats ---------- */
+.exe-stats {
   display: flex;
   align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 16px 18px;
+  gap: 20px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  margin-bottom: 20px;
+  background: var(--surface);
+}
+.exe-stat { display: flex; flex-direction: column; }
+.exe-stat .valor { font-size: 15px; font-weight: 800; }
+.exe-stat .label { font-size: 10.5px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .03em; }
+.exe-stat-link { margin-left: auto; background: none; border: none; color: var(--accent); font-size: 12.5px; font-weight: 700; cursor: pointer; }
+
+/* ---------- pesquisa ---------- */
+.exe-busca { display: flex; gap: 10px; margin-bottom: 20px; }
+.exe-busca input {
+  flex: 1;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 13px 18px;
+  font-size: 14.5px;
+  outline: none;
+  font-family: inherit;
+}
+.exe-busca input:focus { border-color: var(--accent); }
+.exe-busca .btn-primary { border-radius: 100px; padding: 0 22px; }
+
+.exe-erro { color: var(--accent); font-size: 13.5px; margin-bottom: 16px; }
+
+/* ---------- sugestões — compacto, scroll horizontal ---------- */
+.exe-sugestoes { margin-top: 8px; }
+.exe-sugestoes-label { font-size: 11.5px; font-weight: 700; color: var(--ink-soft); text-transform: uppercase; letter-spacing: .03em; }
+.exe-sugestoes-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0 4px; scrollbar-width: none; }
+.exe-sugestoes-scroll::-webkit-scrollbar { display: none; }
+.exe-sugestao-chip {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 100px;
   border: 1px solid var(--border);
   background: var(--surface);
-  border-radius: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  white-space: nowrap;
   cursor: pointer;
-  text-align: left;
-  transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
 }
-.exe-materia-card:hover { border-color: #DDD8D3; box-shadow: var(--shadow-md); transform: translateY(-1px); }
-.exe-materia-card .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-.exe-materia-card .info { flex: 1; display: flex; flex-direction: column; gap: 3px; }
-.exe-materia-card .nome { font-weight: 700; font-size: 15.5px; }
-.exe-materia-card .qtd { font-size: 12.5px; color: var(--ink-soft); }
-.exe-materia-card svg { width: 18px; height: 18px; color: var(--ink-soft); flex-shrink: 0; }
 
 /* ---------- quiz ---------- */
-.exe-quiz-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
+.exe-quiz-head { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; position: relative; }
 .exe-exit {
   width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
   border: 1px solid var(--border); background: var(--surface);
@@ -89,10 +107,20 @@
 .exe-exit svg { width: 16px; height: 16px; color: var(--ink-soft); }
 .exe-progress { flex: 1; display: flex; align-items: center; gap: 10px; }
 .exe-progress .bar { flex: 1; height: 6px; border-radius: 100px; background: var(--border); overflow: hidden; }
-.exe-progress .fill { height: 100%; border-radius: 100px; transition: width .3s ease; }
+.exe-progress .fill { height: 100%; border-radius: 100px; background: var(--accent); transition: width .3s ease; }
 .exe-progress span { font-size: 12.5px; font-weight: 700; color: var(--ink-soft); flex-shrink: 0; }
 
-.exe-tag { display: inline-block; padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; margin-bottom: 14px; }
+.exe-pontos-flutuante {
+  position: absolute;
+  right: 0;
+  top: -18px;
+  font-weight: 800;
+  color: var(--green);
+  animation: flutuar 1.2s ease forwards;
+}
+@keyframes flutuar { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: 1; } 100% { opacity: 0; transform: translateY(-18px); } }
+
+.exe-tag { display: inline-block; padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; margin-bottom: 14px; background: var(--accent-tint); color: var(--accent); }
 
 .exe-pergunta { font-size: 19px; font-weight: 700; line-height: 1.4; margin-bottom: 20px; }
 
@@ -125,10 +153,8 @@
 .exe-opcao svg { width: 18px; height: 18px; flex-shrink: 0; }
 .exe-opcao.correta { border-color: var(--green); background: var(--green-tint); color: #147A44; }
 .exe-opcao.correta .letra { background: var(--green); color: #fff; }
-.exe-opcao.correta svg { color: var(--green); }
 .exe-opcao.errada { border-color: var(--accent); background: var(--accent-tint); color: var(--accent-hover); }
 .exe-opcao.errada .letra { background: var(--accent); color: #fff; }
-.exe-opcao.errada svg { color: var(--accent); }
 
 .exe-feedback {
   background: var(--bg-soft);
@@ -161,3 +187,15 @@
 .exe-result-actions .btn-primary { background: var(--accent); color: #fff; border: none; cursor: pointer; }
 .exe-result-actions .btn-primary:hover { background: var(--accent-hover); }
 .exe-result-actions .btn-ghost { background: none; border: 1.5px solid var(--border); color: var(--ink); cursor: pointer; }
+
+/* ---------- histórico ---------- */
+.exe-historico-topo { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.exe-historico-topo h1 { font-size: 20px; font-weight: 800; margin: 0; }
+.exe-atividade-lista { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.exe-atividade-item { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; }
+.exe-atividade-item .icone { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; }
+.exe-atividade-item.certo .icone { background: var(--green-tint); color: var(--green); }
+.exe-atividade-item.errado .icone { background: var(--accent-tint); color: var(--accent); }
+.exe-atividade-item .info { display: flex; flex-direction: column; }
+.exe-atividade-item .tema { font-size: 13.5px; font-weight: 600; }
+.exe-atividade-item .quando { font-size: 11.5px; color: var(--ink-soft); }
