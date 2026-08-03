@@ -631,3 +631,27 @@
     align-items: start;
   }
 }
+
+/* Acrescentar ao Dashboard.css */
+
+.achv-badge .achv-emoji { font-size: 24px; line-height: 1; }
+
+.continue-icon-neutro { background: var(--blue-tint); }
+.continue-icon-neutro svg { stroke: var(--blue); }
+
+.continue-hint {
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  margin-top: 4px;
+  line-height: 1.4;
+}
+
+.subjects-vazio {
+  display: block;
+  padding: 18px 16px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  color: var(--ink-soft);
+  font-size: 13.5px;
+  text-align: center;
+}

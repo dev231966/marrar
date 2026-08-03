@@ -7,6 +7,7 @@ export const MATERIAS_EXAME = [
   { id: "fisica", nome: "Física" },
   { id: "quimica", nome: "Química" },
   { id: "biologia", nome: "Biologia" },
+    { id: "portugues", nome: "Portugues" },
 ];
 
 export const BLOCOS = [
