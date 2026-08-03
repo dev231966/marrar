@@ -15,7 +15,7 @@ function renderComFormula(texto) {
 }
 
 // Sugestões compactas — não é a lista inteira de matérias, é um atalho rápido.
-const SUGESTOES_RAPIDAS = ["Equações do 2º grau", "Leis de Newton", "Tabela periódica", "Verbos irregulares"];
+const SUGESTOES_RAPIDAS = ["Trigonometria", "Leis de Newton", "Tabela periódica", "Verbos irregulares"];
 
 export default function Exercicios() {
   const { state } = useLocation();
@@ -191,7 +191,7 @@ export default function Exercicios() {
           <>
             <div className="exe-intro">
               <h1>O que queres praticar?</h1>
-              <p>Escreve um tema — não precisa de ser uma disciplina inteira. Ex: "equações do 2º grau", "revolução industrial".</p>
+              <p>Escreva o tema ex:"historia de moçambique"</p>
             </div>
 
             <form className="exe-busca" onSubmit={(e) => { e.preventDefault(); pesquisar(); }}>
