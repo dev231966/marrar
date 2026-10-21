@@ -3,7 +3,7 @@ import RevealOnScroll from '../../../components/RevealOnScroll';
 
 const FAQS = [
   {
-    q: 'O Marrar é mesmo grátis?',
+    q: 'O Estudai é mesmo grátis?',
     a: 'Sim. O plano Estudante dá acesso às matérias base e a exercícios semanais sem qualquer custo. O Premium é opcional, para quem quer explicação e exercícios ilimitados.',
   },
   {
@@ -32,7 +32,7 @@ export default function FAQ() {
       <RevealOnScroll as="div" className="section-head">
         <span className="eyebrow"><span className="dot" />Dúvidas</span>
         <h2>Perguntas frequentes</h2>
-        <p>Tudo o que precisas de saber antes de começar a marrar.</p>
+        <p>Tudo o que precisas de saber antes de começar a estudar.</p>
       </RevealOnScroll>
 
       <div className="faq-list">

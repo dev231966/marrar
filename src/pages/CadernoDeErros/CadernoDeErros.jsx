@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/layout/DashboardHeader";
-import Mathmarrar from "../../components/Mathmarrar";
+import MathEstudai from "../../components/MathEstudai";
 import { materias } from "../../data/explicacaoData";
 import { errosGuardados as errosMock } from "../../data/errosData";
 import { useAuth, authFetch } from "../../context/AuthContext";
@@ -23,7 +23,7 @@ function renderComFormula(texto) {
   const partes = texto.split(/(\$[^$]+\$)/g);
   return partes.map((parte, i) =>
     parte.startsWith("$") && parte.endsWith("$")
-      ? <Mathmarrar key={i} tex={parte.slice(1, -1)} display={false} />
+      ? <MathEstudai key={i} tex={parte.slice(1, -1)} display={false} />
       : <span key={i}>{parte}</span>
   );
 }

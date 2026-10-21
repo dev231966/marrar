@@ -28,7 +28,7 @@ export default function ScorePreview() {
         <RevealOnScroll as="div" className="split-text">
           <span className="eyebrow"><span className="dot" />Prévia pessoal</span>
           <h2>Se fizesses o exame hoje, qual seria a tua nota?</h2>
-          <p>O Marrar acompanha o teu desempenho nos exercícios e mostra uma estimativa realista da tua nota.</p>
+          <p>O Estudai acompanha o teu desempenho nos exercícios e mostra uma estimativa realista da tua nota.</p>
           <Link className="btn-primary" to="/login">Descobrir a minha nota</Link>
         </RevealOnScroll>
 

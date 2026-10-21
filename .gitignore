@@ -13,8 +13,8 @@ dist-ssr
 *.local
 
 # Base de dados local (fallback quando TURSO_* não está configurado)
-marrar.db
-marrar.db-*
+estudai.db
+estudai.db-*
 *.db
 *.db-*
 

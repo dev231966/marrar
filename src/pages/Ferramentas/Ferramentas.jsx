@@ -1,6 +1,6 @@
 import { useState } from "react";
 import DashboardHeader from "../../components/layout/DashboardHeader";
-import Mathmarrar from "../../components/Mathmarrar";
+import MathEstudai from "../../components/MathEstudai";
 import { formulario, unidadesPorCategoria } from "../../data/ferramentasData";
 import "./Ferramentas.css";
 
@@ -128,7 +128,7 @@ function Formulario() {
             {grupo.formulas.map((f) => (
               <div key={f.nome} className="form-item">
                 <span className="nome">{f.nome}</span>
-                <Mathmarrar tex={f.tex} display={false} />
+                <MathEstudai tex={f.tex} display={false} />
               </div>
             ))}
           </div>

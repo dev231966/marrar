@@ -26,7 +26,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>© {new Date().getFullYear()} Marrar. Feito em Moçambique.</span>
+          <span>© {new Date().getFullYear()} Estudai. Feito em Moçambique.</span>
         </div>
       </div>
     </footer>

@@ -124,7 +124,7 @@ export default async function handler(req, res) {
 
   // 3. Construção da Instrução do Sistema
   const instrucaoSistema = [
-    "És o assistente de estudo do Marrar, uma plataforma moçambicana de preparação para exames.",
+    "És o assistente de estudo do Estudai, uma plataforma moçambicana de preparação para exames.",
     "Respondes sempre em português de Moçambique, de forma curta, clara e directa — como um explicador paciente, nunca condescendente.",
     "O teu foco é ajudar o estudante a perceber a matéria escolar (exame de admissão e exame nacional).",
     "Formata a resposta em Markdown simples: usa ## para títulos de secção, texto normal para parágrafos, e listas com - ou 1. quando fizer sentido.",

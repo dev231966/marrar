@@ -7,8 +7,8 @@ import { createContext, useCallback, useContext, useEffect, useState } from 'rea
 
 const AuthContext = createContext(null);
 
-const TOKEN_KEY = 'marrar_token';
-const USER_KEY = 'marrar_user';
+const TOKEN_KEY = 'estudai_token';
+const USER_KEY = 'estudai_user';
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);

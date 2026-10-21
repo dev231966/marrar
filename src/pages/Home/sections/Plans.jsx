@@ -18,7 +18,7 @@ export default function Plans() {
         <RevealOnScroll as="div" className="plan-card">
           <div className="plan-name">Estudante</div>
           <div className="plan-price">0 MT<span>/sempre</span></div>
-          <div className="plan-note">Para começar a marrar sem custos</div>
+          <div className="plan-note">Para começar a estudar sem custos</div>
           <ul>
             <li><CheckIcon />Acesso às matérias base</li>
             <li><CheckIcon />Exercícios semanais limitados</li>

@@ -27,7 +27,7 @@ export default function Explanation() {
       <RevealOnScroll as="div" className="section-head">
         <span className="eyebrow"><span className="dot" />O que encontras</span>
         <h2>Feito para quem precisa de passar</h2>
-        <p>A explicação é o coração do Marrar. À volta dela, tudo o que ajuda a fixar a matéria.</p>
+        <p>A explicação é o coração do Estudai. À volta dela, tudo o que ajuda a fixar a matéria.</p>
       </RevealOnScroll>
 
       <div className="features-grid">
