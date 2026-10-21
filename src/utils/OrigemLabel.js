@@ -8,5 +8,5 @@ const ORIGEM_LABEL = {
 };
 
 export function origemParaLabel(origem) {
-  return ORIGEM_LABEL[origem] || "Marrar";
+  return ORIGEM_LABEL[origem] || "Estudai";
 }

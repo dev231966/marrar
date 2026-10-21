@@ -6,7 +6,7 @@ export default function CTABanner() {
     <section>
       <RevealOnScroll as="div" className="cta-banner">
         <div className="glow" />
-        <h2>Pronto para marrar?</h2>
+        <h2>Pronto para estudar?</h2>
         <p>Cria a tua conta e começa a estudar hoje, de graça.</p>
         <Link className="btn-primary large" to="/login" style={{ display: 'inline-flex' }}>Criar conta grátis</Link>
       </RevealOnScroll>

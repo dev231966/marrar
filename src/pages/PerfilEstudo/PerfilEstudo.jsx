@@ -158,7 +158,7 @@ function Plano({ plano }) {
 
       {plano.instrucoes?.length > 0 && (
         <>
-          <div className="section-lbl">Como estudar na Marrar</div>
+          <div className="section-lbl">Como estudar na Estudai</div>
           <ol className="peb-instrucoes">
             {plano.instrucoes.map((instr, i) => <li key={i}>{instr}</li>)}
           </ol>

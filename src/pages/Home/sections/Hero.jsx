@@ -55,7 +55,7 @@ export default function Hero() {
         </RevealOnScroll>
         <RevealOnScroll as="div" className="hero-text">
           <span className="eyebrow"><span className="dot" />Feito para estudantes de Moçambique</span>
-          <h1>Vai <span className="accent">marrar</span><br />com confiança.</h1>
+          <h1>Vai <span className="accent">estudar</span><br />com confiança.</h1>
           <p className="lead">Matérias, exercícios e explicação para os exames de admissão e nacional, tudo num único lugar.</p>
           <div className="hero-cta">
             <Link className="btn-primary large" to="/login">Criar conta grátis</Link>
@@ -67,7 +67,7 @@ export default function Hero() {
               <span style={{ background: '#F0A438' }}>B</span>
               <span style={{ background: '#1E9E5A' }}>C</span>
             </div>
-            Estudantes já estão a marrar todos os dias
+            Estudantes já estão a estudar todos os dias
           </div>
         </RevealOnScroll>
 

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/layout/DashboardHeader";
-import Mathmarrar from "../../components/Mathmarrar";
+import MathEstudai from "../../components/MathEstudai";
 import { useAuth, authFetch } from "../../context/AuthContext";
 import "./Exercicios.css";
 
@@ -24,7 +24,7 @@ function renderComFormula(texto) {
     }
 
     return tex !== null
-      ? <Mathmarrar key={i} tex={tex} display={display} />
+      ? <MathEstudai key={i} tex={tex} display={display} />
       : <span key={i}>{parte}</span>;
   });
 }

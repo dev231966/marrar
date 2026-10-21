@@ -1,7 +1,7 @@
 import './Logo.css';
 
 /**
- * Marca do Marrar. `showWordmark` controla se o texto "Marrar" aparece
+ * Marca do Estudai. `showWordmark` controla se o texto "Estudai" aparece
  * ao lado do símbolo (útil para espaços mais apertados, ex: favicon-like usages).
  */
 export default function Logo({ showWordmark = true, as: Tag = 'a', href = '/' }) {
@@ -12,7 +12,7 @@ export default function Logo({ showWordmark = true, as: Tag = 'a', href = '/' })
           <path d="M4 12L10 18L20 6" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </span>
-      {showWordmark && 'Marrar'}
+      {showWordmark && 'Estudai'}
     </Tag>
   );
 }

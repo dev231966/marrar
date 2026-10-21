@@ -26,7 +26,7 @@ function montarInstrucao(respostas) {
   const ehSecundario = classeAtual === "10" || classeAtual === "12";
 
   return [
-    "És um orientador de estudos experiente da Marrar, plataforma moçambicana de preparação para exames.",
+    "És um orientador de estudos experiente da Estudai, plataforma moçambicana de preparação para exames.",
     `Tipo de exame: ${tipoExame}. Meses até ao exame: ${mesesFaltam || "não indicado"}.`,
     areaInteresse ? `Área/curso de interesse: ${areaInteresse}.` : "",
     notaAlvo ? `Nota-alvo (0-20): ${notaAlvo}.` : "",
@@ -48,7 +48,7 @@ function montarInstrucao(respostas) {
     ehSecundario
       ? "Como o aluno está no ensino secundário (10ª/12ª), inclui uma tabela explícita de temas por matéria com prioridade (alta/media/baixa) e o porquê de cada prioridade."
       : "Inclui uma lista de temas prioritários por matéria, com prioridade (alta/media/baixa) e o porquê.",
-    "Inclui também instruções curtas e concretas de como usar a Marrar para seguir o plano (ex: que página visitar, em que ordem).",
+    "Inclui também instruções curtas e concretas de como usar a Estudai para seguir o plano (ex: que página visitar, em que ordem).",
     "Responde APENAS com JSON válido, sem texto à volta, no formato:",
     `{"resumo": "...", "temas": [{"materiaId": "...", "tema": "...", "prioridade": "alta|media|baixa", "porque": "..."}], "instrucoes": ["...", "..."]}`,
     "Português de Moçambique, directo, sem floreios.",
