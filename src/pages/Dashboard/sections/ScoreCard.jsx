@@ -1,4 +1,8 @@
-export default function ScoreCard({ score = 13.4, maxScore = 20 }) {
+export default function ScoreCard({ progresso }) {
+  const maxScore = 20;
+  const total = Number(progresso?.exerciciosFeitos || 0);
+  const certos = Number(progresso?.exerciciosCertos || 0);
+  const score = total > 0 ? Math.min(maxScore, (certos / total) * maxScore) : 0;
   const radius = 36;
   const circumference = 2 * Math.PI * radius;
   const ratio = score / maxScore;
