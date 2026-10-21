@@ -29,10 +29,6 @@ function renderComFormula(texto) {
   });
 }
 
-// Fallback só para quem ainda não tem nenhum exercício feito (conta nova) —
-// assim que houver histórico, a grade de "exercícios feitos" toma o lugar disto.
-const SUGESTOES_INICIAIS = ["Trigonometria", "Leis de Newton", "Tabela periódica", "Verbos irregulares"];
-
 function formatarData(iso) {
   try {
     return new Date(iso).toLocaleDateString("pt-MZ", { day: "2-digit", month: "short" });
@@ -402,10 +398,9 @@ export default function Exercicios() {
                   })}
                 </div>
               ) : (
-                <div className="exe-sugestoes-scroll">
-                  {SUGESTOES_INICIAIS.map((s) => (
-                    <button key={s} className="exe-sugestao-chip" onClick={() => pesquisar(s)}>{s}</button>
-                  ))}
+                <div className="exe-empty-state">
+                  <strong>Ainda não tens exercícios guardados.</strong>
+                  <span>Pesquisa um tema do teu programa para começares a praticar.</span>
                 </div>
               )}
             </div>

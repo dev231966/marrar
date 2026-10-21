@@ -1,4 +1,4 @@
-// Dados de exemplo. Substituir por dados vindos da API quando existir.
+// Configuração de navegação do dashboard. Métricas e actividade vêm da API.
 
 export const services = [
   { key: 'explicacao', name: 'Explicação', icon: 'chat', className: 'i-explicacao' },
