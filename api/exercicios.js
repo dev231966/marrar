@@ -12,7 +12,6 @@
 import { autenticar, ensureSchema, getDb } from "./_db.js";
 import { tentarAtribuir } from "./conquistas.js";
 
-const MODELO = "openai/gpt-oss-120b";
 const PONTOS_POR_DIFICULDADE = { facil: 10, medio: 20, dificil: 35 };
 const PONTOS_POR_NIVEL = 150;
 
@@ -53,58 +52,6 @@ async function calcularDificuldadeAlvo(db, userId, materiaId) {
   return "facil";
 }
 
-async function gerarComFario(temaBusca, dificuldade, quantidade) {
-  const apiKey = process.env.GROQ_API_KEY;
-  if (!apiKey || quantidade <= 0) return [];
-
-  const instrucao = [
-    `Cria ${quantidade} exercícios de escolha múltipla sobre "${temaBusca}", para o liceu em Moçambique.`,
-    `O nível de dificuldade deve ser "${dificuldade}" (facil, medio ou dificil).`,
-    "Responde APENAS com um array JSON válido, sem texto à volta, no formato:",
-    `[{"pergunta": "...", "opcoes": ["...","...","...","..."], "correta": 0, "explicacao": "..."}]`,
-    "\"correta\" é o índice (0 a 3) da opção certa em \"opcoes\". Para fórmulas usa apenas $...$.",
-  ].join(" ");
-
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 20000);
-
-  try {
-    const resp = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` },
-      body: JSON.stringify({
-        model: MODELO,
-        messages: [{ role: "user", content: instrucao }],
-        reasoning_effort: "low",
-        max_tokens: 1200,
-        response_format: { type: "json_object" },
-      }),
-      signal: controller.signal,
-    });
-    clearTimeout(timeoutId);
-    if (!resp.ok) return [];
-
-    const dados = await resp.json();
-    const texto = dados?.choices?.[0]?.message?.content || "";
-    const parsed = JSON.parse(texto);
-    const lista = Array.isArray(parsed) ? parsed : (parsed.exercicios || []);
-
-    return lista
-      .filter((e) => e?.pergunta && Array.isArray(e.opcoes) && e.opcoes.length >= 2 && typeof e.correta === "number")
-      .slice(0, quantidade)
-      .map((e) => ({
-        ...e,
-        pergunta: normalizarLatex(e.pergunta),
-        opcoes: e.opcoes.map(normalizarLatex),
-        explicacao: normalizarLatex(e.explicacao),
-      }));
-  } catch (e) {
-    clearTimeout(timeoutId);
-    console.error("Falha do Fario a gerar exercícios:", e.message);
-    return [];
-  }
-}
-
 async function handleGet(req, res) {
   const busca = String(req.query?.busca || "").trim();
   const limite = Math.min(Math.max(Number(req.query?.limite) || 5, 1), 15);
@@ -142,33 +89,6 @@ async function handleGet(req, res) {
     linhas = resultado.rows;
   } catch (e) {
     console.error("Banco de exercícios indisponível, a seguir sem ele:", e.message);
-  }
-
-  if (linhas.length < limite) {
-    const gerados = await gerarComFario(busca, dificuldadeAlvo, limite - linhas.length);
-    if (gerados.length) {
-      try {
-        const db = getDb();
-        for (const ex of gerados) {
-          const inserted = await db.execute({
-            sql: `INSERT INTO exercicios_banco (materia_id, nivel, tema, pergunta, opcoes_json, correta, explicacao, origem, dificuldade)
-                  VALUES (?, 'todos', ?, ?, ?, ?, ?, 'ia', ?) RETURNING id`,
-            args: [chave, busca, ex.pergunta, JSON.stringify(ex.opcoes), ex.correta, ex.explicacao || "", dificuldadeAlvo],
-          });
-          linhas.push({
-            id: inserted.rows[0].id,
-            pergunta: ex.pergunta,
-            opcoes_json: JSON.stringify(ex.opcoes),
-            correta: ex.correta,
-            explicacao: ex.explicacao || "",
-            origem: "ia",
-            dificuldade: dificuldadeAlvo,
-          });
-        }
-      } catch (e) {
-        console.error("Não foi possível gravar exercícios gerados pelo Fario:", e.message);
-      }
-    }
   }
 
   const exercicios = linhas.map((r) => ({

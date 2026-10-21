@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/layout/DashboardHeader";
 import MathEstudai from "../../components/MathEstudai";
@@ -43,7 +43,6 @@ export default function Exercicios() {
   const { token } = useAuth();
 
   const [ecra, setEcra] = useState("entrada"); // entrada | quiz | resultado | historico
-  const [busca, setBusca] = useState(state?.context?.busca || "");
   const [temaActivo, setTemaActivo] = useState(null);
 
   const [perguntas, setPerguntas] = useState([]);
@@ -61,13 +60,6 @@ export default function Exercicios() {
 
   // Conquistas desbloqueadas nesta ronda (ex: "perfeccionista"), mostradas no ecrã de resultado.
   const [conquistasNovas, setConquistasNovas] = useState([]);
-
-  // ---------- autocomplete ----------
-  const [sugestoes, setSugestoes] = useState([]);
-  const [sugestoesAbertas, setSugestoesAbertas] = useState(false);
-  const [sugestoesCarregando, setSugestoesCarregando] = useState(false);
-  const buscaWrapRef = useRef(null);
-  const debounceRef = useRef(null);
 
   // ---------- exercícios feitos (grade da tela principal) ----------
   const [exerciciosFeitos, setExerciciosFeitos] = useState([]);
@@ -110,53 +102,14 @@ export default function Exercicios() {
   useEffect(() => { carregarRecomendado(); }, [carregarRecomendado]);
 
   useEffect(() => {
-    if (state?.context?.busca) pesquisar(state.context.busca);
+    if (state?.context?.tema) pesquisar(state.context.tema);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Fecha o dropdown de sugestões ao clicar fora dele.
-  useEffect(() => {
-    function aoClicarFora(e) {
-      if (buscaWrapRef.current && !buscaWrapRef.current.contains(e.target)) {
-        setSugestoesAbertas(false);
-      }
-    }
-    document.addEventListener("mousedown", aoClicarFora);
-    return () => document.removeEventListener("mousedown", aoClicarFora);
-  }, []);
-
-  // Autocomplete ao vivo: pesquisa no banco (não é lista fixa) com debounce.
-  function aoMudarBusca(valor) {
-    setBusca(valor);
-    setSugestoesAbertas(true);
-    clearTimeout(debounceRef.current);
-
-    const termo = valor.trim();
-    if (termo.length < 2) {
-      setSugestoes([]);
-      setSugestoesCarregando(false);
-      return;
-    }
-
-    setSugestoesCarregando(true);
-    debounceRef.current = setTimeout(async () => {
-      try {
-        const resp = await authFetch(token, `/api/temas-sugeridos?q=${encodeURIComponent(termo)}&limite=8`);
-        const dados = await resp.json().catch(() => null);
-        if (resp.ok) setSugestoes(dados?.sugestoes || []);
-      } catch {
-        // autocomplete é um bónus — falha aqui não deve travar a pesquisa
-      } finally {
-        setSugestoesCarregando(false);
-      }
-    }, 300);
-  }
-
   async function pesquisar(termo) {
-    const alvo = (termo ?? busca).trim();
-    if (!alvo) return;
+    const alvo = String(termo || "").trim();
 
-    setSugestoesAbertas(false);
+
     setCarregando(true);
     setErro(null);
     setTemaActivo(alvo);
@@ -255,7 +208,6 @@ export default function Exercicios() {
   }
 
   function novaPesquisa() {
-    setBusca("");
     setTemaActivo(null);
     setPerguntas([]);
     setPasso(0);
@@ -263,7 +215,6 @@ export default function Exercicios() {
     setConfirmada(false);
     setRespostas([]);
     setConquistasNovas([]);
-    setSugestoes([]);
     setEcra("entrada");
   }
 
@@ -301,46 +252,23 @@ export default function Exercicios() {
         {ecra === "entrada" && (
           <>
             <div className="exe-intro">
-              <h1>O que queres praticar?</h1>
-              <p>Escreva o tema ex:"historia de moçambique"</p>
+              <span className="eyebrow">Prática guiada</span>
+              <h1>Escolhe uma disciplina para começar.</h1>
+              <p>Usa exercícios publicados na biblioteca. Sem perguntas geradas automaticamente.</p>
             </div>
 
-            <div className="exe-busca-wrap" ref={buscaWrapRef}>
-              <form
-                className="exe-busca"
-                onSubmit={(e) => { e.preventDefault(); pesquisar(); }}
-                autoComplete="off"
-              >
-                <input
-                  type="text"
-                  value={busca}
-                  onChange={(e) => aoMudarBusca(e.target.value)}
-                  onFocus={() => setSugestoesAbertas(true)}
-                  placeholder="Pesquisar tema…"
-                  autoFocus
-                />
-                <button type="submit" className="btn-primary" disabled={!busca.trim() || carregando}>
-                  {carregando ? "…" : "Praticar"}
+            <div className="exe-disciplinas" aria-label="Disciplinas disponíveis">
+              {["Matemática", "Física", "Química", "Biologia"].map((disciplina) => (
+                <button
+                  key={disciplina}
+                  className="exe-disciplina"
+                  onClick={() => pesquisar(disciplina)}
+                  disabled={carregando}
+                >
+                  <span className="exe-disciplina-nome">{disciplina}</span>
+                  <span>{carregando ? "A carregar…" : "Começar prática"}</span>
                 </button>
-              </form>
-
-              {sugestoesAbertas && busca.trim().length >= 2 && (
-                <div className="exe-autocomplete">
-                  {sugestoesCarregando ? (
-                    <div className="exe-autocomplete-msg">A procurar…</div>
-                  ) : sugestoes.length > 0 ? (
-                    sugestoes.map((s) => (
-                      <button key={s} className="exe-autocomplete-item" onClick={() => pesquisar(s)}>
-                        {s}
-                      </button>
-                    ))
-                  ) : (
-                    <div className="exe-autocomplete-msg">
-                      Sem sugestões — carrega em "Praticar" para pesquisar mesmo assim.
-                    </div>
-                  )}
-                </div>
-              )}
+              ))}
             </div>
 
             {erro && <p className="exe-erro">{erro}</p>}
