@@ -8,9 +8,9 @@ import './Header.css';
 const NAV_LINKS = [
   { href: '#como-funciona', label: 'Como funciona' },
   { href: '#materias', label: 'Matérias' },
-  { href: '#planos', label: 'Planos' },
-  { href: '#explicacao', label: 'Explicação' },
-  { href: '#faqs', label: 'FAQ' },
+  { href: '/dashboard/exames', label: 'Exames' },
+  { href: '/dashboard/exercicios', label: 'Simulados' },
+  { href: '/dashboard/duvidas', label: 'Explicador Jonas' },
 ];
 
 export default function Header() {
