@@ -63,6 +63,11 @@ export default function Login() {
   const location = useLocation();
   const { entrar, registar } = useAuth();
   const destino = location.state?.de || '/dashboard';
+  const oauthErro = new URLSearchParams(location.search).get('oauth_error');
+
+  function iniciarGoogle() {
+    window.location.assign(`/api/auth/google?redirect=${encodeURIComponent(destino)}`);
+  }
   const [activeTab, setActiveTab] = useState('login');
   const [authError, setAuthError] = useState(null);
 
@@ -137,7 +142,17 @@ export default function Login() {
       <div className="card">
         <h1>{activeTab === 'login' ? 'Entrar na sua conta' : 'Criar a sua conta'}</h1>
 
-        {authError && <p className="auth-error" role="alert">{authError}</p>}
+        {(authError || oauthErro) && <p className="auth-error" role="alert">{authError || 'Não foi possível concluir o acesso com Google. Tenta novamente.'}</p>}
+
+        {activeTab === 'login' && (
+          <>
+            <button type="button" className="oauth-button" onClick={iniciarGoogle}>
+              <span className="google-mark" aria-hidden="true">G</span>
+              Continuar com Google
+            </button>
+            <div className="auth-divider"><span>ou entra com email</span></div>
+          </>
+        )}
 
         {activeTab === 'login' ? (
           <form onSubmit={handleLoginSubmit}>

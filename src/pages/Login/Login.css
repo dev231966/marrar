@@ -69,6 +69,29 @@ nav.tabs[data-active="register"] .tab-pill { transform: translateX(100%); }
 
 .card form { display: flex; flex-direction: column; gap: 15px; }
 
+.oauth-button {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color .18s ease, background .18s ease, transform .18s ease;
+}
+.oauth-button:hover { border-color: var(--ink-soft); background: var(--surface-2, #f8f8f8); transform: translateY(-1px); }
+.oauth-button:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+.google-mark { color: #4285F4; font-size: 18px; font-weight: 800; }
+.auth-divider { display: flex; align-items: center; gap: 10px; color: var(--ink-soft); font-size: 12px; margin: 17px 0 2px; }
+.auth-divider::before, .auth-divider::after { content: ''; height: 1px; flex: 1; background: var(--border); }
+
 .auth-error {
   background: rgba(176, 0, 32, .08);
   color: var(--accent, #B00020);
