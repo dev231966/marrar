@@ -5,8 +5,6 @@ import ScoreCard from './sections/ScoreCard';
 import ContinueCard from './sections/ContinueCard';
 import ServicesGrid from './sections/ServicesGrid';
 import SubjectsRow from './sections/SubjectsRow';
-import ExamCountdown from './sections/ExamCountdown';
-import StudyHeatmap from './sections/StudyHeatmap';
 import ActivityFeed from './sections/ActivityFeed';
 import Achievements from './sections/Achievements';
 import Skeleton from '../../components/Skeleton';
@@ -30,8 +28,8 @@ export default function Dashboard() {
     async function carregar() {
       try {
         const [rProg, rRec, rMat, rConq] = await Promise.all([
-          authFetch(token, '/api/progresso?limite=1'),
-          authFetch(token, '/api/recomendado'),
+          authFetch(token, '/api/resumo?tipo=progresso&limite=4'),
+          authFetch(token, '/api/resumo?tipo=recomendado'),
           authFetch(token, '/api/exercicios-feitos?limite=4'),
           authFetch(token, '/api/conquistas'),
         ]);
@@ -84,18 +82,15 @@ export default function Dashboard() {
         </div>
 
         <div className="hero-row">
-          <ScoreCard />
+          <ScoreCard progresso={progresso} />
           <ContinueCard recomendado={recomendado} carregando={carregando} />
         </div>
 
         <ServicesGrid />
         <SubjectsRow materias={materias} carregando={carregando} />
-        <ExamCountdown daysLeft={47} readySubjects={5} totalSubjects={6} />
-
         <div className="section-lbl">O teu histórico</div>
         <div className="grid-2">
-          <StudyHeatmap />
-          <ActivityFeed />
+          <ActivityFeed atividade={progresso?.atividade} />
         </div>
 
         <Achievements conquistas={conquistas} carregando={carregando} />
