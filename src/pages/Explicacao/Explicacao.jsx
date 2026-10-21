@@ -56,34 +56,11 @@ export default function Explicacao() {
         </div>
       ) : (
         <>
-          <section className="exp-section">
-            <h2>As tuas matérias</h2>
-            <div className="exp-materias-grid">
-              {materias.map((m) => (
-                <Link key={m.id} to={`/dashboard/explicacao/${m.id}`} className="exp-materia-card">
-                  <span className="dot" style={{ background: m.cor }} />
-                  <span className="nome">{m.nome}</span>
-                  <div className="bar">
-                    <div className="fill" style={{ width: `${m.progresso}%`, background: m.cor }} />
-                  </div>
-                  <span className="pct">{m.progresso}% concluído</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-
-          <ContinuarCard items={continuarItems} />
-
-          <section className="exp-section">
-            <h2>Blog</h2>
-            <div className="exp-blog-strip">
-              {blogPosts.map((p) => (
-                <div key={p.id} className="exp-blog-card">
-                  <span className="tag">{p.tag}</span>
-                  <div className="t">{p.titulo}</div>
-                </div>
-              ))}
-            </div>
+          <section className="exp-section exp-empty-state" aria-live="polite">
+            <div className="exp-empty-mark" aria-hidden="true">—</div>
+            <h2>As explicações oficiais ainda não estão disponíveis</h2>
+            <p>Não vamos preencher esta área com aulas exemplificativas. Quando o conteúdo curricular for validado, ele aparecerá aqui com matéria, tema e progresso reais.</p>
+            <Link to="/dashboard/exercicios" className="exp-empty-action">Praticar com exercícios disponíveis</Link>
           </section>
         </>
       )}

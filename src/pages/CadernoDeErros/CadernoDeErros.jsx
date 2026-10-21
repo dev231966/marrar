@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import DashboardHeader from "../../components/layout/DashboardHeader";
 import MathEstudai from "../../components/MathEstudai";
 import { materias } from "../../data/explicacaoData";
-import { errosGuardados as errosMock } from "../../data/errosData";
 import { useAuth, authFetch } from "../../context/AuthContext";
 import "./CadernoDeErros.css";
 
@@ -34,6 +33,7 @@ export default function CadernoDeErros() {
   const [filtro, setFiltro] = useState("todas");
   const [abertoId, setAbertoId] = useState(null);
   const [errosGuardados, setErrosGuardados] = useState(null); // null = ainda a carregar
+  const [erroCarregamento, setErroCarregamento] = useState(false);
 
   useEffect(() => {
     let cancelado = false;
@@ -47,10 +47,13 @@ export default function CadernoDeErros() {
           data: tempoRelativo(e.criadoEm),
         }));
         setErrosGuardados(lista);
+        setErroCarregamento(false);
       })
-      // API/BD indisponível: mostra os dados de demonstração em vez de um
-      // ecrã em branco, para a página nunca ficar "morta".
-      .catch(() => !cancelado && setErrosGuardados(errosMock));
+      .catch(() => {
+        if (cancelado) return;
+        setErrosGuardados([]);
+        setErroCarregamento(true);
+      });
 
     return () => { cancelado = true; };
   }, [token]);
@@ -84,6 +87,12 @@ export default function CadernoDeErros() {
         {carregando ? (
           <div className="err-vazio">
             <p>A carregar o teu caderno de erros…</p>
+          </div>
+        ) : erroCarregamento ? (
+          <div className="err-vazio err-falha" role="alert">
+            <h3>Não foi possível carregar o caderno</h3>
+            <p>Os teus erros estão guardados na tua conta. Verifica a ligação e tenta novamente.</p>
+            <button type="button" className="btn-primary" onClick={() => window.location.reload()}>Tentar novamente</button>
           </div>
         ) : erros.length === 0 ? (
           <div className="err-vazio">
