@@ -25,7 +25,64 @@
 .exe-page main.page { max-width: 640px; margin: 0 auto; padding: 24px 16px 60px; }
 
 /* ---------- intro ---------- */
-.exe-intro h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
+.exe-intro .eyebrow {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.exe-disciplinas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 24px 0 28px;
+}
+
+.exe-disciplina {
+  display: flex;
+  min-height: 92px;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.exe-disciplina:hover:not(:disabled),
+.exe-disciplina:focus-visible {
+  border-color: var(--accent);
+  outline: none;
+  transform: translateY(-2px);
+}
+
+.exe-disciplina:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.exe-disciplina-nome {
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.exe-disciplina > span:last-child {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+.exe-intro h1 {
+ font-size: 24px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 8px; }
 .exe-intro p { font-size: 14.5px; color: var(--ink-soft); line-height: 1.6; margin-bottom: 24px; }
 
 .exe-hint { font-size: 13.5px; color: var(--ink-soft); text-align: center; padding: 30px 10px; }
