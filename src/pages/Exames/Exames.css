@@ -39,7 +39,40 @@
 }
 .exm-nivel-chip.active { background: var(--accent, #B00020); border-color: var(--accent, #B00020); color: #fff; }
 
-.exm-vazio { text-align: center; color: var(--ink-soft); font-size: 14px; padding: 40px 0; }
+.exm-vazio {
+  margin-top: 12px;
+  padding: 42px 24px 46px;
+  border: 1px dashed color-mix(in srgb, var(--accent, #B00020) 28%, var(--border, #E9E6E2));
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface, #fff) 88%, var(--accent-tint, #FBE7E5));
+  text-align: center;
+}
+.exm-vazio-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  margin: 0 auto 16px;
+  border-radius: 14px;
+  background: var(--accent-tint, #FBE7E5);
+  color: var(--accent, #B00020);
+}
+.exm-vazio-icon svg { width: 25px; height: 25px; }
+.exm-vazio h2 { margin: 0; color: var(--ink, #1c1a19); font-size: 17px; letter-spacing: -0.015em; }
+.exm-vazio p { max-width: 430px; margin: 9px auto 0; color: var(--ink-soft, #6E6A66); font-size: 13.5px; line-height: 1.6; }
+.exm-limpar {
+  margin-top: 18px;
+  padding: 9px 15px;
+  border: 1px solid var(--border, #E9E6E2);
+  border-radius: 10px;
+  background: var(--surface, #fff);
+  color: var(--ink, #1c1a19);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.exm-limpar:hover { border-color: var(--accent, #B00020); color: var(--accent, #B00020); }
 
 .exm-lista { display: flex; flex-direction: column; gap: 10px; }
 .exm-item {

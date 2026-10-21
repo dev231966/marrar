@@ -1,8 +1,8 @@
 import RevealOnScroll from '../../../components/RevealOnScroll';
 
 const METRICS = [
-  { value: '70%', label: 'do tempo de estudo é gasto a procurar material', tone: 'bad' },
-  { value: '3×', label: 'mais exercícios feitos com conteúdo organizado', tone: 'good' },
+  { value: '01', label: 'plano claro para saber por onde começar', tone: 'bad' },
+  { value: '02', label: 'formas de estudar: praticar e rever', tone: 'good' },
 ];
 
 const BAD_POINTS = [
@@ -104,7 +104,7 @@ export default function ProblemSection() {
       </div>
 
       <RevealOnScroll as="div" delay={2} className="compare-foot">
-        <p>Estudantes que trocam de estratégia recuperam, em média, semanas de estudo perdido. <a href="/login">Começa de graça →</a></p>
+        <p>Troca a procura sem rumo por uma rotina simples de prática e revisão. <a href="/login">Começa de graça →</a></p>
       </RevealOnScroll>
     </section>
   );

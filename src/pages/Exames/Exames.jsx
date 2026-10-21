@@ -67,7 +67,21 @@ export default function Exames() {
         </div>
 
         {resultados.length === 0 ? (
-          <p className="exm-vazio">Nenhum exame encontrado com estes filtros.</p>
+          <section className="exm-vazio" aria-live="polite">
+            <div className="exm-vazio-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M6 3.5h9l3 3V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z" />
+                <path d="M14 3.5V7h4M8 11h8M8 15h5" />
+              </svg>
+            </div>
+            <h2>{query || disciplina !== "todas" || nivel !== "todos" ? "Nenhum exame corresponde aos filtros" : "O catálogo ainda está a ser preparado"}</h2>
+            <p>{query || disciplina !== "todas" || nivel !== "todos" ? "Experimenta outra disciplina, classe ou termo de pesquisa." : "Só vamos publicar documentos oficiais verificados. Assim estudas com fontes reais, sem links quebrados ou materiais inventados."}</p>
+            {(query || disciplina !== "todas" || nivel !== "todos") && (
+              <button type="button" className="exm-limpar" onClick={() => { setQuery(""); setDisciplina("todas"); setNivel("todos"); }}>
+                Limpar filtros
+              </button>
+            )}
+          </section>
         ) : (
           <div className="exm-lista">
             {resultados.map((e) => {
