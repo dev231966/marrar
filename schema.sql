@@ -183,6 +183,23 @@ INSERT INTO conquistas (chave, nome, descricao, icone) VALUES
 ON CONFLICT (chave) DO NOTHING;
 
 -- Plano de estudo personalizado (wizard de perfil do aluno)
+CREATE TABLE IF NOT EXISTS exames (
+  id TEXT PRIMARY KEY,
+  titulo TEXT NOT NULL,
+  descricao TEXT,
+  disciplina_id TEXT,
+  disciplina_nome TEXT NOT NULL,
+  nivel TEXT NOT NULL DEFAULT 'admissao',
+  tipo TEXT NOT NULL DEFAULT 'admissao',
+  ano INTEGER,
+  ficheiro TEXT NOT NULL,
+  origem TEXT,
+  publicado BOOLEAN NOT NULL DEFAULT FALSE,
+  criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  atualizado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_exames_catalogo ON exames (publicado, disciplina_id, nivel, ano DESC);
+
 CREATE TABLE IF NOT EXISTS perfil_estudo_resultados (
   id             SERIAL PRIMARY KEY,
   user_id        INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
