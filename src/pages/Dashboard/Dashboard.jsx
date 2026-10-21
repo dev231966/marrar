@@ -20,12 +20,16 @@ export default function Dashboard() {
   const [materias, setMaterias] = useState(null);
   const [conquistas, setConquistas] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState(false);
+  const [tentativa, setTentativa] = useState(0);
 
   useEffect(() => {
     if (!token) return;
     let cancelado = false;
 
     async function carregar() {
+      setCarregando(true);
+      setErro(false);
       try {
         const [rProg, rRec, rMat, rConq] = await Promise.all([
           authFetch(token, '/api/resumo?tipo=progresso&limite=4'),
@@ -46,8 +50,7 @@ export default function Dashboard() {
         if (rMat.ok) setMaterias(dMat?.exercicios ?? []);
         if (rConq.ok) setConquistas(dConq?.conquistas ?? []);
       } catch {
-        // cada secção trata a falta dos seus dados com um estado vazio —
-        // uma falha de rede não deve travar a página toda
+        if (!cancelado) setErro(true);
       } finally {
         if (!cancelado) setCarregando(false);
       }
@@ -55,13 +58,25 @@ export default function Dashboard() {
 
     carregar();
     return () => { cancelado = true; };
-  }, [token]);
+  }, [token, tentativa]);
 
   return (
     <div className="dashboard-page">
       <DashboardHeader />
 
       <main className="page">
+        {erro && (
+          <div className="dashboard-alert" role="alert">
+            <div>
+              <strong>Não foi possível actualizar o teu progresso.</strong>
+              <span>Os teus dados continuam seguros. Tenta novamente.</span>
+            </div>
+            <button type="button" onClick={() => setTentativa((valor) => valor + 1)}>
+              Tentar novamente
+            </button>
+          </div>
+        )}
+
         <div className="greet">
           <div>
             <h1>
