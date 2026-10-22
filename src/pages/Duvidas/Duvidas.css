@@ -1,7 +1,8 @@
 .duv-page {
-  max-width: 640px;
+  width: min(100%, 980px);
+  max-width: 980px;
   margin: 0 auto;
-  padding: 20px 20px 100px;
+  padding: 20px clamp(16px, 4vw, 38px) 112px;
   font-family: 'Inter', sans-serif;
   color: var(--ink, #1C1B1A);
   min-height: 100vh;
@@ -77,27 +78,38 @@
 }
 .duv-chip:hover { border-color: var(--accent, #D6342C); }
 
-/* thread */
-.duv-thread { display: flex; flex-direction: column; gap: 14px; flex: 1; padding-bottom: 10px; }
-.duv-msg { display: flex; }
+/* thread — largura e ritmo inspirados num chat de estudo, não em balões estreitos */
+.duv-thread {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 16px 0 24px;
+}
+.duv-msg { display: flex; width: 100%; }
 .duv-msg.user { justify-content: flex-end; }
 .duv-bubble {
-  max-width: 82%;
-  padding: 12px 15px;
-  border-radius: 16px;
-  font-size: 14px;
-  line-height: 1.6;
+  max-width: min(88%, 720px);
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.65;
 }
 .duv-msg.user .duv-bubble {
   background: var(--accent, #D6342C);
   color: #fff;
-  border-bottom-right-radius: 4px;
+  max-width: min(78%, 640px);
+  border-bottom-right-radius: 6px;
 }
 .duv-msg.model .duv-bubble {
+  width: min(100%, 720px);
   background: var(--surface, #fff);
   border: 1px solid var(--border, #E9E6E2);
   color: var(--ink, #1C1B1A);
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 5px 18px rgba(28, 27, 26, 0.035);
 }
 .duv-typing { display: flex; gap: 4px; align-items: center; padding: 14px 16px; }
 .duv-typing span {
@@ -111,26 +123,32 @@
 
 .duv-error { font-size: 12.5px; color: var(--accent, #D6342C); text-align: center; }
 
-/* input row */
+/* input row — compositor amplo, fixo e confortável como num chat moderno */
 .duv-input-row {
   position: sticky;
   bottom: 0;
+  z-index: 2;
   display: flex;
-  gap: 8px;
-  padding-top: 14px;
-  background: var(--bg, #FAFAF8);
+  gap: 10px;
+  width: min(100%, 820px);
+  margin: 0 auto;
+  padding: 14px 0 0;
+  background: linear-gradient(var(--bg, #FAFAF8), var(--bg, #FAFAF8) 78%, transparent);
 }
 .duv-input-row input {
   flex: 1;
+  min-width: 0;
+  height: 52px;
   border: 1.5px solid var(--border, #E9E6E2);
-  border-radius: 100px;
-  padding: 13px 18px;
-  font-size: 14.5px;
+  border-radius: 16px;
+  padding: 14px 19px;
+  font-size: 15px;
   font-family: inherit;
   outline: none;
   background: var(--surface, #fff);
+  box-shadow: 0 6px 24px rgba(28, 27, 26, 0.06);
 }
-.duv-input-row input:focus { border-color: var(--accent, #D6342C); }
+.duv-input-row input:focus { border-color: var(--accent, #D6342C); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #D6342C) 14%, transparent); }
 .duv-send {
   width: 46px;
   height: 46px;
@@ -145,6 +163,16 @@
 }
 .duv-send svg { width: 18px; height: 18px; color: #fff; }
 .duv-send:disabled { opacity: 0.4; cursor: not-allowed; }
+
+@media (max-width: 560px) {
+  .duv-page { padding-inline: 12px; }
+  .duv-thread { gap: 18px; padding-top: 8px; }
+  .duv-bubble,
+  .duv-msg.model .duv-bubble { max-width: 94%; padding: 13px 15px; font-size: 14px; }
+  .duv-msg.user .duv-bubble { max-width: 88%; }
+  .duv-input-row input { height: 49px; padding-inline: 15px; }
+  .duv-send { width: 44px; height: 44px; }
+}
 .duv-highlight {
   color: var(--gold, #F0A438);
   font-weight: 700;
