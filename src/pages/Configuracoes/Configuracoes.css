@@ -1,0 +1,21 @@
+.settings-page { min-height: 100vh; background: var(--bg, #fafaf8); color: var(--ink, #1c1b1a); }
+.settings-content { width: min(100% - 32px, 760px); margin: 0 auto; padding: 42px 0 80px; }
+.settings-heading { margin-bottom: 24px; }
+.settings-kicker { color: var(--accent, #d6342c); font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.settings-heading h1 { margin: 8px 0 5px; font-size: clamp(28px, 5vw, 42px); letter-spacing: -.04em; }
+.settings-heading p, .settings-danger p { margin: 0; color: var(--ink-soft, #6e6a66); }
+.settings-card { margin-top: 16px; padding: 22px; border: 1px solid var(--border, #e9e6e2); border-radius: 18px; background: var(--surface, #fff); }
+.settings-profile { display: flex; align-items: center; gap: 13px; padding-bottom: 20px; border-bottom: 1px solid var(--border, #e9e6e2); }
+.settings-avatar { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: var(--accent, #d6342c); color: #fff; font-weight: 800; }
+.settings-profile strong, .settings-profile span { display: block; }
+.settings-profile span { margin-top: 3px; color: var(--ink-soft, #6e6a66); font-size: 13px; }
+.settings-row { display: flex; justify-content: space-between; gap: 16px; padding: 17px 0; border-bottom: 1px solid var(--border, #e9e6e2); font-size: 14px; }
+.settings-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.settings-row span { color: var(--ink-soft, #6e6a66); }
+.settings-row strong { text-align: right; overflow-wrap: anywhere; }
+.settings-danger { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.settings-danger h2 { margin: 0 0 5px; font-size: 16px; }
+.settings-danger button { flex: 0 0 auto; border: 1px solid var(--accent, #d6342c); border-radius: 10px; padding: 10px 14px; background: transparent; color: var(--accent, #d6342c); font: inherit; font-weight: 700; cursor: pointer; }
+.settings-danger button:hover, .settings-danger button:focus-visible { background: var(--accent, #d6342c); color: #fff; }
+.settings-back { margin-top: 22px; border: 0; background: transparent; color: var(--accent, #d6342c); font: inherit; font-weight: 700; cursor: pointer; }
+@media (max-width: 560px) { .settings-content { padding-top: 28px; } .settings-danger { align-items: flex-start; flex-direction: column; } .settings-danger button { width: 100%; } }

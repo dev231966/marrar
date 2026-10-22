@@ -22,6 +22,7 @@ const Exames = lazy(() => import('./pages/Exames/Exames'));
 const Admin = lazy(() => import('./pages/Admin/Admin'));
 
 const PerfilEstudo = lazy(()=>import("./pages/PerfilEstudo/PerfilEstudo"));
+const Configuracoes = lazy(() => import('./pages/Configuracoes/Configuracoes'));
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
 
 // Todas as rotas /dashboard/* passam por aqui dentro — uma só chamada a
@@ -61,7 +62,8 @@ export default function App() {
         <Route path="/dashboard/evolucao" element={<Protegida><Evolucao /></Protegida>} />
         <Route path="/dashboard/ferramentas" element={<Protegida><Ferramentas /></Protegida>} />
         <Route path="/dashboard/erros" element={<Protegida><CadernoDeErros /></Protegida>} />
-        <Route path="/dashboard/perfil" element={<PerfilEstudo />} />
+        <Route path="/dashboard/perfil" element={<Protegida><PerfilEstudo /></Protegida>} />
+        <Route path="/dashboard/configuracoes" element={<Protegida><Configuracoes /></Protegida>} />
         <Route path="/dashboard/material" element={<Protegida><MeuMaterial /></Protegida>} />
         <Route path="/dashboard/plano" element={<Protegida><Payment /></Protegida>} />
         <Route path="/dashboard/orientacao" element={<Protegida><Orientacao /></Protegida>} />
