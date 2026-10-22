@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import DashboardHeader from "../../components/layout/DashboardHeader";
-import { materias } from "../../data/explicacaoData";
 import "./Exames.css";
 
 const NIVEIS = [
@@ -16,6 +15,7 @@ export default function Exames() {
   const [disciplina, setDisciplina] = useState("todas");
   const [nivel, setNivel] = useState("todos");
   const [resultados, setResultados] = useState([]);
+  const [disciplinas, setDisciplinas] = useState([]);
   const [estado, setEstado] = useState("loading");
   const [tentativa, setTentativa] = useState(0);
 
@@ -31,6 +31,7 @@ export default function Exames() {
       })
       .then((data) => {
         setResultados(data.exames || []);
+        setDisciplinas(data.disciplinas || []);
         setEstado("ready");
       })
       .catch((error) => {
@@ -65,8 +66,8 @@ export default function Exames() {
         <div className="exm-filtros">
           <select value={disciplina} onChange={(e) => setDisciplina(e.target.value)}>
             <option value="todas">Todas as disciplinas</option>
-            {materias.map((m) => (
-              <option key={m.id} value={m.id}>{m.nome}</option>
+            {disciplinas.map((disciplina) => (
+              <option key={disciplina.id} value={disciplina.id}>{disciplina.nome}</option>
             ))}
           </select>
 

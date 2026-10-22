@@ -9,7 +9,7 @@ export default function SubjectsRow({ materias, carregando }) {
   if (carregando) {
     return (
       <>
-        <div className="section-lbl">As tuas matérias</div>
+        <div className="section-lbl">Os teus temas praticados</div>
         <div className="subjects">
           {[0, 1, 2, 3].map((i) => (
             <div className="subject-card" key={i}>
@@ -29,7 +29,7 @@ export default function SubjectsRow({ materias, carregando }) {
   if (!materias || materias.length === 0) {
     return (
       <>
-        <div className="section-lbl">As tuas matérias</div>
+        <div className="section-lbl">Os teus temas praticados</div>
         <Link to="/dashboard/exercicios" className="subjects-vazio">
           Ainda não praticaste nenhum tema — começa por aqui.
         </Link>

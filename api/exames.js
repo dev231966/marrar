@@ -37,7 +37,14 @@ export default async function handler(req, res) {
       args
     );
 
-    return res.status(200).json({ exames: result });
+    const disciplinas = await db.raw.query(
+      `SELECT DISTINCT disciplina_id AS id, disciplina_nome AS nome
+       FROM exames
+       WHERE publicado = TRUE AND disciplina_id IS NOT NULL
+       ORDER BY disciplina_nome ASC`
+    );
+
+    return res.status(200).json({ exames: result, disciplinas });
   } catch (error) {
     console.error("Erro ao carregar exames:", error.message);
     return res.status(500).json({ error: "Catálogo indisponível." });
