@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Loader from './components/Loader';
+import Seo from './components/Seo';
 import ProtectedRoute from './routes/ProtectedRoute';
 
 const Home = lazy(() => import('./pages/Home/Home'));
@@ -44,8 +45,10 @@ export default function App() {
   }
 
   return (
-    <Suspense fallback={<Loader progress={50} />}>
-      <Routes>
+    <>
+      <Seo />
+      <Suspense fallback={<Loader progress={50} />}>
+        <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/dashboard" element={<Protegida><Dashboard /></Protegida>} />
@@ -63,7 +66,8 @@ export default function App() {
         <Route path="/dashboard/orientacao" element={<Protegida><Orientacao /></Protegida>} />
         <Route path="/dashboard/exames" element={<Protegida><Exames /></Protegida>} />
         <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Suspense>
+        </Routes>
+      </Suspense>
+    </>
   );
 }

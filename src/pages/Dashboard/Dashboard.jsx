@@ -139,7 +139,6 @@ export default function Dashboard() {
           </div>
         </section>
 
-        <div className="section-lbl">As tuas disciplinas</div>
         <SubjectsRow materias={materias} carregando={carregando} />
         <div className="section-lbl">O teu histórico</div>
         <div className="grid-2">

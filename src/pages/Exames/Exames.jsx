@@ -1,7 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardHeader from "../../components/layout/DashboardHeader";
-import { materias } from "../../data/explicacaoData";
-import { pesquisarExames } from "../../data/examesData";
 import "./Exames.css";
 
 const NIVEIS = [
@@ -16,11 +14,32 @@ export default function Exames() {
   const [query, setQuery] = useState("");
   const [disciplina, setDisciplina] = useState("todas");
   const [nivel, setNivel] = useState("todos");
+  const [resultados, setResultados] = useState([]);
+  const [disciplinas, setDisciplinas] = useState([]);
+  const [estado, setEstado] = useState("loading");
+  const [tentativa, setTentativa] = useState(0);
 
-  const resultados = useMemo(
-    () => pesquisarExames({ query, disciplina, nivel }),
-    [query, disciplina, nivel]
-  );
+  useEffect(() => {
+    const params = new URLSearchParams({ query, disciplina, nivel });
+    const controller = new AbortController();
+    setEstado("loading");
+
+    fetch(`/api/exames?${params}`, { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error("Não foi possível carregar o catálogo.");
+        return response.json();
+      })
+      .then((data) => {
+        setResultados(data.exames || []);
+        setDisciplinas(data.disciplinas || []);
+        setEstado("ready");
+      })
+      .catch((error) => {
+        if (error.name !== "AbortError") setEstado("error");
+      });
+
+    return () => controller.abort();
+  }, [query, disciplina, nivel, tentativa]);
 
   return (
     <div className="exm-page">
@@ -47,8 +66,8 @@ export default function Exames() {
         <div className="exm-filtros">
           <select value={disciplina} onChange={(e) => setDisciplina(e.target.value)}>
             <option value="todas">Todas as disciplinas</option>
-            {materias.map((m) => (
-              <option key={m.id} value={m.id}>{m.nome}</option>
+            {disciplinas.map((disciplina) => (
+              <option key={disciplina.id} value={disciplina.id}>{disciplina.nome}</option>
             ))}
           </select>
 
@@ -66,7 +85,11 @@ export default function Exames() {
           </div>
         </div>
 
-        {resultados.length === 0 ? (
+        {estado === "loading" ? (
+          <section className="exm-vazio" aria-live="polite"><h2>A carregar exames verificados</h2><p>A consultar o catálogo oficial.</p></section>
+        ) : estado === "error" ? (
+          <section className="exm-vazio" aria-live="assertive"><h2>Não foi possível carregar os exames</h2><p>Verifica a ligação e tenta novamente.</p><button type="button" className="exm-limpar" onClick={() => setTentativa((value) => value + 1)}>Tentar novamente</button></section>
+        ) : resultados.length === 0 ? (
           <section className="exm-vazio" aria-live="polite">
             <div className="exm-vazio-icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">

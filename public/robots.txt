@@ -3,3 +3,7 @@ Allow: /
 Disallow: /dashboard/
 
 Sitemap: /sitemap.xml
+
+# Áreas privadas e rotas de aplicação não devem aparecer nos resultados.
+Disallow: /dashboard/
+Disallow: /api/
