@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth, authFetch } from '../../context/AuthContext';
 import DashboardHeader from '../../components/layout/DashboardHeader';
-import ScoreCard from './sections/ScoreCard';
 import ContinueCard from './sections/ContinueCard';
 import SubjectsRow from './sections/SubjectsRow';
 import ActivityFeed from './sections/ActivityFeed';
@@ -95,48 +94,32 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="hero-row">
-          <ScoreCard progresso={progresso} />
-          <ContinueCard recomendado={recomendado} carregando={carregando} />
-        </div>
-
-        <section className="daily-plan" aria-labelledby="daily-plan-title">
-          <div className="daily-plan-heading">
+        <section className="dashboard-actions" aria-labelledby="actions-title">
+          <div className="dashboard-section-heading">
             <div>
-              <span className="section-kicker">Roteiro de hoje</span>
-              <h2 id="daily-plan-title">Uma sessão curta vale mais do que esperar pela motivação.</h2>
+              <span className="section-kicker">Área de estudo</span>
+              <h2 id="actions-title">O que queres fazer agora?</h2>
             </div>
-            <span className="daily-plan-date">{new Date().toLocaleDateString('pt-MZ', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+            <span className="dashboard-date">{new Date().toLocaleDateString('pt-MZ', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
           </div>
-          <div className="daily-plan-grid">
-            <article className="plan-step plan-step-primary">
-              <span className="plan-step-number">01</span>
-              <div>
-                <span className="plan-step-label">Reforçar</span>
-                <h3>{recomendado?.tema || 'Escolher um tema'}</h3>
-                <p>{recomendado ? `A tua taxa está em ${Math.round((recomendado.acertos / recomendado.total) * 100)}%. Faz uma ronda de 5 questões.` : 'Começa por uma disciplina para criar o teu primeiro registo.'}</p>
-              </div>
-              <a href="/dashboard/exercicios" className="plan-step-action">Praticar</a>
-            </article>
-            <article className="plan-step">
-              <span className="plan-step-number">02</span>
-              <div>
-                <span className="plan-step-label">Rever</span>
-                <h3>Os teus erros recentes</h3>
-                <p>{progresso?.errosRecentes ? `${progresso.errosRecentes} pontos para rever no caderno.` : 'Cada erro guardado vira uma pista para a próxima tentativa.'}</p>
-              </div>
-              <a href="/dashboard/erros" className="plan-step-action secondary">Abrir caderno</a>
-            </article>
-            <article className="plan-step">
-              <span className="plan-step-number">03</span>
-              <div>
-                <span className="plan-step-label">Consolidar</span>
-                <h3>Explicar um conceito</h3>
-                <p>Fecha a sessão com uma explicação simples do tema que estudaste.</p>
-              </div>
-              <a href="/dashboard/explicacao" className="plan-step-action secondary">Estudar</a>
-            </article>
+          <div className="dashboard-action-grid">
+            <a href="/dashboard/exercicios" className="dashboard-action dashboard-action-primary">
+              <span className="action-icon">01</span><span><strong>Praticar exercícios</strong><small>{recomendado?.tema || 'Escolhe uma disciplina e começa'}</small></span><b>→</b>
+            </a>
+            <a href="/dashboard/exercicios?modo=simulado" className="dashboard-action">
+              <span className="action-icon">02</span><span><strong>Preparar um simulado</strong><small>Escolhe duração, disciplina e nível</small></span><b>→</b>
+            </a>
+            <a href="/dashboard/erros" className="dashboard-action">
+              <span className="action-icon">03</span><span><strong>Rever os teus erros</strong><small>{progresso?.errosRecentes ? `${progresso.errosRecentes} itens para rever` : 'Constrói o teu caderno enquanto praticas'}</small></span><b>→</b>
+            </a>
           </div>
+        </section>
+
+        <section className="study-metrics" aria-label="Medidas concretas do teu estudo">
+          <article><strong>{progresso?.exerciciosFeitos ?? 0}</strong><span>exercícios feitos</span></article>
+          <article><strong>{progresso?.exerciciosCertos ?? 0}</strong><span>respostas certas</span></article>
+          <article><strong>{progresso?.sequenciaDias ?? 0}</strong><span>dias seguidos</span></article>
+          <article><strong>{progresso?.errosRecentes ?? 0}</strong><span>itens para rever</span></article>
         </section>
 
         <SubjectsRow materias={materias} carregando={carregando} />
