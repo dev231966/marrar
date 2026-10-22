@@ -7,7 +7,7 @@
 // GET /api/perfil
 //   -> { resultado: { id, estado, planoJson, criadoEm } | null }
 
-import { autenticar, ensureSchema, getDb } from "../_db.js";
+import { autenticar, ensureSchema, getDb } from "../../../../api/_db.js";
 
 function baseUrl(req) {
   const proto = req.headers["x-forwarded-proto"] || "https";

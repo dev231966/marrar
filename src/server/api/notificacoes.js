@@ -10,8 +10,8 @@
 //
 // Requer sessão (Authorization: Bearer <token>).
 
-import { getDb, ensureSchema } from "./_db.js";
-import { encriptar, desencriptar } from "./_crypto.js";
+import { getDb, ensureSchema } from "../../../api/_db.js";
+import { encriptar, desencriptar } from "../../../api/_crypto.js";
 
 function extrairToken(req) {
   const header = req.headers.authorization || "";

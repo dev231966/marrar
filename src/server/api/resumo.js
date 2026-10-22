@@ -18,7 +18,7 @@
 // A lógica interna de cada `tipo` é exactamente a mesma que estava nos
 // arquivos originais — só o roteamento HTTP mudou.
 
-import { autenticar, ensureSchema, getDb } from "./_db.js";
+import { autenticar, ensureSchema, getDb } from "../../../api/_db.js";
 
 const LIMITE_HISTORICO_PADRAO = 40;
 const PONTOS_POR_NIVEL = 150;

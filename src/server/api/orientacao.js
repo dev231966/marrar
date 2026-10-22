@@ -10,7 +10,7 @@
 // GET /api/orientacao?id=123
 //   -> { resultado: { id, respostas, sugestoes, origem, criadoEm } }
 
-import { getDb, ensureSchema } from "./_db.js";
+import { getDb, ensureSchema } from "../../../api/_db.js";
 
 const MODELO = "openai/gpt-oss-120b";
 const LIMITE_HISTORICO = 20;

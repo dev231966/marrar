@@ -4,7 +4,7 @@
 // Devolve: { user: { id, nome, email }, token } ou { erro }
 
 import bcrypt from "bcryptjs";
-import { getDb, gerarTokenSessao, ensureSchema } from "./_db.js";
+import { getDb, gerarTokenSessao, ensureSchema } from "../../../api/_db.js";
 
 const DIAS_SESSAO = 30;
 

@@ -1,4 +1,4 @@
-import { ensureSchema, getDb } from "./_db.js";
+import { ensureSchema, getDb } from "../../../api/_db.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {

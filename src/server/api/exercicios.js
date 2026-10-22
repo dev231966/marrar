@@ -9,7 +9,7 @@
 //      Regista a resposta, alimenta o Caderno de Erros se necessário, e
 //      atualiza pontos/nível/sequência de dias.
 
-import { autenticar, ensureSchema, getDb } from "./_db.js";
+import { autenticar, ensureSchema, getDb } from "../../../api/_db.js";
 import { tentarAtribuir } from "./conquistas.js";
 
 const PONTOS_POR_DIFICULDADE = { facil: 10, medio: 20, dificil: 35 };

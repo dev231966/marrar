@@ -12,7 +12,7 @@
 // este ainda é válido.
 const MODELO = "openai/gpt-oss-120b";
 
-import { autenticar, ensureSchema, getDb } from "./_db.js";
+import { autenticar, ensureSchema, getDb } from "../../../api/_db.js";
 
 /**
  * Grava pergunta + resposta em duvidas_historico, associadas ao utilizador
