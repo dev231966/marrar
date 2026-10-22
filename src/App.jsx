@@ -19,6 +19,7 @@ const MeuMaterial = lazy(() => import('./pages/MeuMaterial/MeuMaterial'));
 const Payment = lazy(() => import('./pages/Payment/Payment'));
 const Orientacao = lazy(() => import('./pages/Orientacao/Orientacao'));
 const Exames = lazy(() => import('./pages/Exames/Exames'));
+const Admin = lazy(() => import('./pages/Admin/Admin'));
 
 const PerfilEstudo = lazy(()=>import("./pages/PerfilEstudo/PerfilEstudo"));
 const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
@@ -65,6 +66,7 @@ export default function App() {
         <Route path="/dashboard/plano" element={<Protegida><Payment /></Protegida>} />
         <Route path="/dashboard/orientacao" element={<Protegida><Orientacao /></Protegida>} />
         <Route path="/dashboard/exames" element={<Protegida><Exames /></Protegida>} />
+        <Route path="/admin" element={<Protegida><Admin /></Protegida>} />
         <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>

@@ -7,8 +7,14 @@ CREATE TABLE IF NOT EXISTS users (
   nome          TEXT NOT NULL,
   email         TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
+  papel         TEXT NOT NULL DEFAULT 'estudante' CHECK (papel IN ('estudante', 'professor', 'admin')),
+  suspenso      BOOLEAN NOT NULL DEFAULT false,
   criado_em     TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS papel TEXT NOT NULL DEFAULT 'estudante';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS suspenso BOOLEAN NOT NULL DEFAULT false;
+CREATE INDEX IF NOT EXISTS idx_users_admin ON users(papel, suspenso, criado_em);
 
 CREATE TABLE IF NOT EXISTS sessions (
   id          SERIAL PRIMARY KEY,
