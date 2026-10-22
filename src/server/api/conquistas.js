@@ -10,7 +10,7 @@
 //      /api/exercicios (POST), a cada resposta.
 //      -> { novas: [{ chave, nome, descricao, icone }] }
 
-import { autenticar, ensureSchema, getDb } from "./_db.js";
+import { autenticar, ensureSchema, getDb } from "../../../api/_db.js";
 
 async function tentarAtribuir(db, userId, chave, detalhe = "") {
   try {

@@ -1,4 +1,4 @@
-import { autenticar, ensureSchema, getDb } from './_db.js';
+import { autenticar, ensureSchema, getDb } from '../../../api/_db.js';
 
 async function adminId(req, db) {
   const userId = await autenticar(req);

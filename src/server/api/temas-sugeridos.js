@@ -7,7 +7,7 @@
 // (seed ou gerados por IA). Usa prefixo (ILIKE) + full-text (busca_tsv) para
 // apanhar tanto "trigo..." como palavras no meio do tema.
 
-import { autenticar, ensureSchema, getDb } from "./_db.js";
+import { autenticar, ensureSchema, getDb } from "../../../api/_db.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
