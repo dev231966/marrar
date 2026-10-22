@@ -69,14 +69,14 @@ export default async function handler(req, res) {
       const token = await criarSessao(db, userId);
 
       return res.status(201).json({
-        user: { id: userId, nome: nome.trim(), email },
+        user: { id: userId, nome: nome.trim(), email, papel: 'estudante', suspenso: false },
         token,
       });
     }
 
     if (acao === "entrar") {
       const resultado = await db.execute({
-        sql: "SELECT id, nome, email, password_hash FROM users WHERE email = ?",
+        sql: "SELECT id, nome, email, password_hash, papel, suspenso FROM users WHERE email = ?",
         args: [email],
       });
       const user = resultado.rows[0];
@@ -93,7 +93,7 @@ export default async function handler(req, res) {
       const token = await criarSessao(db, user.id);
 
       return res.status(200).json({
-        user: { id: user.id, nome: user.nome, email: user.email },
+        user: { id: user.id, nome: user.nome, email: user.email, papel: user.papel, suspenso: user.suspenso },
         token,
       });
     }
