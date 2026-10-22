@@ -12,7 +12,7 @@
 // materia_id vai no resultado apenas como contexto para a futura rota
 // /explicacao, não deve ser mostrado como "matéria" na UI.
 
-import { autenticar, ensureSchema, getDb } from "./_db.js";
+import { autenticar, ensureSchema, getDb } from "../../../api/_db.js";
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {

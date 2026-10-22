@@ -5,8 +5,8 @@
 // resultado e notifica o aluno quando pronto. Não é pensado para ser
 // chamado directamente pelo frontend.
 
-import { autenticar, ensureSchema, getDb } from "../_db.js";
-import { encriptar } from "../_crypto.js";
+import { autenticar, ensureSchema, getDb } from "../../../../api/_db.js";
+import { encriptar } from "../../../../api/_crypto.js";
 
 const MODELO = "openai/gpt-oss-120b";
 
